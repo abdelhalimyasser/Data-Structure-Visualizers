@@ -43,6 +43,7 @@
          align-items: center;
          padding: 10px 20px;
          background-color: #1A1A1D;
+         margin-bottom: 10px;
          /*position: sticky;*/
          }
          header h1 {
@@ -301,7 +302,7 @@
          width: 100%;
          height: 100%;
          background: rgba(0, 0, 0, 0.6);
-         z-index: 999;
+         z-index: 1002; /* Increased to be above header and hamburger */
          }
          .popup {
          background: #fff;
@@ -458,9 +459,9 @@
             <div class="learn-more" id="learn-more">
                <h2>Learn More Data Structures</h2>
                <div class="controls">
-                  <button onclick="window.open('#', '_blank')">Stack</button>
-                  <button onclick="window.open('#', '_blank')">Queue</button>
-                  <button onclick="window.open('#', '_blank')">Binary Tree</button>
+                  <button onclick="window.open('Stack Visualizer.html', '_blank')">Stack</button>
+                  <button onclick="window.open('Queue Visualizer.html', '_blank')">Queue</button>
+                  <button onclick="window.open('Binary Tree Visualizer.html', '_blank')">Binary Tree</button>
                </div>
             </div>
          </div>
@@ -901,15 +902,6 @@
               renderList();
           });
           
-          
-          function openHelp() {
-            document.getElementById("helpOverlay").style.display = "block";
-          }
-         
-          function closeHelp() {
-            document.getElementById("helpOverlay").style.display = "none";
-          }
-         
           window.addEventListener("click", function (e) {
             const overlay = document.getElementById("helpOverlay");
             const popup = document.querySelector(".popup");
