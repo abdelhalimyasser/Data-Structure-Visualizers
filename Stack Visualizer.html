@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta http-equiv="X-UA-Compatible" content="ie=edge">
+      <title>Stack Visualizer | Abdelhalim Yasser</title>
+      <meta name="description"
+         content="A simple and interactive stack visualizer by Abdelhalim Yasser to help you understand how stacks work in programming and data structures.">
+      <meta name="keywords"
+         content="stack visualizer, data structures, programming, algorithms, Abdelhalim Yasser, Java, JavaScript, coding tools">
+      <meta name="author" content="Abdelhalim Yasser">
+      <meta property="og:title" content="Stack Visualizer by Abdelhalim Yasser">
+      <meta property="og:description"
+         content="Visualize and learn stack operations in programming with this interactive tool.">
+      <meta property="og:image" content="https://pngup.com/0d0U/abdelhalim-yasser%20logo.png">
+      <meta property="og:url" content="https://abdelhalim-yasser.github.io/Stack/">
+      <meta property="og:type" content="website">
+      <meta name="twitter:card" content="summary_large_image">
+      <meta name="twitter:title" content="Stack Visualizer by Abdelhalim Yasser">
+      <meta name="twitter:description"
+         content="Visualize and learn stack operations in programming with this interactive tool.">
+      <meta name="twitter:image" content="https://pngup.com/0d0U/abdelhalim-yasser%20logo.png">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+      <link rel="icon" href="https://pngup.com/0d0U/abdelhalim-yasser%20logo.png" sizes="512x512" type="image/png">
+      <link rel="apple-touch-icon" href="https://pngup.com/0d0U/abdelhalim-yasser%20logo.png" sizes="180x180"
+         type="image/png">
+      <link rel="manifest" href="manifest.json">
+      <meta name="theme-color" content="#2b2b2f">
+      <meta name="mobile-web-app-capable" content="yes">
+      <meta name="apple-mobile-web-app-capable" content="yes">
+      <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+      <style>
+         *,
+         html {
+         margin: 0;
+         padding: 0;
+         box-sizing: border-box;
+         }
+         body {
+         font-family: Arial, sans-serif;
+         text-align: center;
+         background-color: #1A1A1D;
+         margin: 0;
+         padding: 20px;
+         display: flex;
+         flex-direction: column;
+         min-height: 100vh;
+         }
+         main {
+         flex: 1;
+         display: flex;
+         flex-direction: column;
+         align-items: center;
+         justify-content: center;
+         }
+         header {
+         top: 0;
+         z-index: 1000;
+         width: 100%;
+         display: flex;
+         justify-content: space-between;
+         align-items: center;
+         padding: 10px 20px;
+         background-color: #1A1A1D;
+         position: sticky;
+         }
+         header h1 {
+         color: #fff;
+         font-size: 24px;
+         margin: 0;
+         }
+         header h1 a {
+         color: #fff;
+         text-decoration: none;
+         }
+         .hamburger {
+         display: none;
+         cursor: pointer;
+         z-index: 1001;
+         }
+         .hamburger i {
+         font-size: 24px;
+         color: #fff;
+         }
+         .nav {
+         display: flex;
+         }
+         .nav.open {
+         display: block;
+         }
+         .nav-list {
+         list-style: none;
+         display: flex;
+         gap: 25px;
+         }
+         .nav-link {
+         text-decoration: none;
+         color: #fff;
+         font-size: 18px;
+         font-weight: 500;
+         transition: color 0.3s;
+         }
+         .nav-link:hover {
+         color: #8E24AA;
+         }
+         @media (max-width: 767px) {
+         .hamburger {
+         display: flex;
+         align-items: center;
+         }
+         .nav {
+         position: fixed;
+         top: 0;
+         right: 0;
+         height: 100vh;
+         width: 70vw;
+         background-color: #1A1A1D;
+         transform: translateX(100%);
+         transition: transform 0.2s ease-in-out;
+         padding-top: 80px;
+         z-index: 999;
+         }
+         .nav.open {
+         transform: translateX(0);
+         }
+         .nav-list {
+         flex-direction: column;
+         gap: 30px;
+         align-items: center;
+         }
+         }
+         h1 {
+         margin-bottom: 10px;
+         color: #fff;
+         }
+         .subtitle {
+         color: #bbb;
+         margin-bottom: 20px;
+         display: flex;
+         }
+         .controls {
+         margin-bottom: 20px;
+         }
+         .btn-group {
+         margin-top: 10px;
+         }
+         input[type="number"] {
+         padding: 10px;
+         margin: 5px;
+         font-size: 16px;
+         width: 185px;
+         border: 2px solid #666;
+         border-radius: 8px;
+         background-color: #2a2a2e;
+         color: white;
+         text-align: center;
+         transition: all 0.3s ease;
+         }
+         input[type="number"]:focus {
+         border-color: #8E24AA;
+         outline: none;
+         }
+         button {
+         padding: 10px 15px;
+         font-size: 15px;
+         margin: 5px;
+         cursor: pointer;
+         background: linear-gradient(135deg, #3B1C32, #6A1E55);
+         color: white;
+         border: none;
+         border-radius: 8px;
+         transition: all 0.3s ease;
+         }
+         button:hover {
+         background: linear-gradient(135deg, #8E24AA, #B83280);
+         transform: translateY(-2px);
+         }
+         .stack-item {
+         width: 180px;
+         padding: 10px;
+         margin: 5px 0;
+         background: linear-gradient(135deg, #6A1E55, #8E24AA);
+         color: white;
+         border-radius: 8px;
+         transition: all 0.3s ease;
+         font-weight: bold;
+         }
+         .stack-stats-wrapper {
+         display: flex;
+         gap: 20px;
+         justify-content: center;
+         align-items: flex-start;
+         margin-bottom: 20px;
+         }
+         .stats-learnmore {
+         display: flex;
+         flex-direction: column;
+         gap: 20px;
+         }
+         .stack-container {
+         display: flex;
+         flex-direction: column-reverse;
+         align-items: center;
+         min-height: 450px;
+         width: 220px;
+         margin: 0;
+         border: 2px solid #8E24AA;
+         border-radius: 12px;
+         padding: 10px;
+         background-color: #2b2b2f;
+         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+         }
+         .stats {
+         background: #2b2b2f;
+         padding: 15px;
+         width: 220px;
+         text-align: left;
+         border-radius: 8px;
+         border: 2px solid #8E24AA;
+         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+         color: white;
+         }
+         .learn-more {
+         background-color: #2b2b2f;
+         padding: 15px;
+         border-radius: 8px;
+         width: 220px;
+         border: 2px solid #8E24AA;
+         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+         color: white;
+         display: flex;
+         flex-direction: column;
+         align-items: center;
+         }
+         .learn-more h2 {
+         color: #8E24AA;
+         margin-bottom: 15px;
+         }
+         .learn-more .controls {
+         display: flex;
+         flex-direction: column;
+         gap: 10px;
+         width: 100%;
+         }
+         .learn-more button {
+         width: 100%;
+         padding: 10px;
+         font-size: 15px;
+         }
+         @media (max-width: 767px) {
+         .stack-stats-wrapper {
+         flex-direction: column;
+         align-items: center;
+         }
+         .stats-learnmore {
+         flex-direction: column;
+         align-items: center;
+         }
+         }
+         .overlay {
+         display: none;
+         position: fixed;
+         top: 0;
+         left: 0;
+         width: 100%;
+         height: 100%;
+         background: rgba(0, 0, 0, 0.6);
+         z-index: 999;
+         }
+         .popup {
+         background: #fff;
+         padding: 20px;
+         border-radius: 10px;
+         max-width: 90%;
+         width: 500px;
+         margin: 80px auto;
+         position: relative;
+         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+         background: linear-gradient(135deg, #8E24AA, #B83280);
+         color: white;
+         font-size: 16px;
+         text-align: left;
+         line-height: 1.5;
+         animation: fadeIn 0.4s ease;
+         }
+         .popup h2 {
+         color: #fff;
+         margin-bottom: 15px;
+         text-align: center;
+         }
+         .popup p {
+         color: #ddd;
+         text-align: center;
+         }
+         .close {
+         position: absolute;
+         right: 15px;
+         top: 10px;
+         font-size: 25px;
+         cursor: pointer;
+         }
+         @media (max-width: 600px) {
+         .popup {
+         width: 80%;
+         font-size: 14px;
+         }
+         }
+      </style>
+   </head>
+   <body>
+      <header>
+         <h1><a href="https://abdelhalim-yasser.github.io/Stack/">Stack Visualizer</a></h1>
+         <div class="hamburger" onclick="toggleMenu()">
+            <i id="menu-icon" class="fas fa-bars"></i>
+         </div>
+         <nav class="nav" id="nav">
+            <ul class="nav-list" id="nav-list">
+               <li><a href="#" class="nav-link" onclick="openHelp()">How to work</a></li>
+               <li><a href="https://github.com/abdelhalim-yasser/Stack.git" class="nav-link">View Implementation</a>
+               </li>
+               <li><a href="https://github.com/abdelhalim-yasser" class="nav-link">My Github</a></li>
+               <li><a href="https://www.linkedin.com/in/abdelhalim-yasser" class="nav-link">LinkedIn</a></li>
+            </ul>
+         </nav>
+      </header>
+      <main>
+         <h1>Stack Visualizer</h1>
+         <p class="subtitle">
+            A simple stack visualizer to help you understand how stacks work.
+         </p>
+         <div id="helpOverlay" class="overlay">
+            <div class="popup">
+               <span class="close" onclick="closeHelp()"><i class="fas fa-times"></i></span>
+               <h2>How Stack Works</h2>
+               <p><b>Stack:</b> A data structure that follows the <strong>LIFO</strong> (Last In, First Out) principle.
+                  This means the last item added is the first one to be removed.
+               </p>
+               <ul>
+                  <li><b>push(value)</b> - Add a new item to the Stack.</li>
+                  <li><b>pop()</b> - Remove the last added item.</li>
+                  <li><b>peek()</b> - View the last item without removing it.</li>
+                  <li><b>print()</b> - Display all items.</li>
+                  <li><b>max()</b> - Show the maximum value.</li>
+                  <li><b>min()</b> - Show the minimum value.</li>
+                  <li><b>sum()</b> - Calculate the sum of all values.</li>
+                  <li><b>average()</b> - Calculate the average value.</li>
+                  <li><b>count()</b> - Show the number of items.</li>
+                  <li><b>swap(a, b)</b> - Swap two items if they exist.</li>
+                  <li><b>reverse()</b> - Reverse the order of items.</li>
+                  <li><b>sort()</b> - Sort items in ascending order.</li>
+                  <li><b>clear()</b> - Remove all items from the Stack.</li>
+               </ul>
+            </div>
+         </div>
+         <div class="controls">
+            <input type="number" id="stack-input" placeholder="Enter a number" />
+            <div class="btn-group">
+               <button onclick="push()">Push</button>
+               <button onclick="pop()">Pop</button>
+               <button onclick="peek()">Peek</button>
+               <button onclick="printStack()">Print</button>
+               <button onclick="openSearchMenu()">Search</button>
+               <button onclick="swapData()">Swap by Data</button>
+               <button onclick="swapIndex()">Swap by Index</button>
+               <button onclick="removeDuplicates()">Remove Duplicates</button>
+               <button onclick="reverseStack()">Reverse</button>
+               <button onclick="randomize()">Randomize</button>
+               <button onclick="sortStack()">Sort</button>
+               <button onclick="clearStack()">Clear</button>
+            </div>
+         </div>
+         <div class="stack-stats-wrapper">
+            <div id="stack-container" class="stack-container"></div>
+            <div class="stats-learnmore">
+               <div class="stats" id="stats">
+                  <strong>Top:</strong> <span id="top">-</span><br />
+                  <strong>Count:</strong> <span id="count">0</span><br />
+                  <strong>Sum:</strong> <span id="sum">-</span><br />
+                  <strong>Average:</strong> <span id="avg">-</span><br />
+                  <strong>Max:</strong> <span id="max">-</span><br />
+                  <strong>Min:</strong> <span id="min">-</span><br />
+               </div>
+               <div class="learn-more" id="learn-more">
+                  <h2>Learn More Data Structures</h2>
+                  <div class="controls">
+                     <a href="Queue Visualizer.html"><button>Queue</button></a>
+                     <a href="Linked List Visualizer.html"><button>Linked List</button></a>
+                     <a href="Binary Tree Visualizer.html"><button>Binary Tree</button></a>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </main>
+      <footer>
+         <p style="color: #fff;">
+            Created by
+            <a href="https://github.com/abdelhalim-yasser" target="_blank"
+               style="color: blueviolet; text-decoration: none;">
+            Abdelhalim Yasser</a>
+         </p>
+         <p style="color: #fff;"><a href="https://abdelhalim-yasser.github.io/Stack/"
+            style="color: #fff; text-decoration: none;">Stack Visualizer</a> © 2025</p>
+      </footer>
+      <script>
+         // Toggle menu for mobile view
+         let menuOpen = false;
+         function toggleMenu() {
+            const nav = document.getElementById("nav");
+            const icon = document.getElementById("menu-icon");
+            menuOpen = !menuOpen;
+            if (menuOpen) {
+               nav.classList.add("open");
+               icon.classList.replace("fa-bars", "fa-times");
+            } else {
+               nav.classList.remove("open");
+               icon.classList.replace("fa-times", "fa-bars");
+            }
+         }
+         document.querySelectorAll("#nav a").forEach(link => {
+            link.addEventListener("click", () => {
+               const nav = document.getElementById("nav");
+               const icon = document.getElementById("menu-icon");
+               nav.classList.remove("open");
+               icon.classList.replace("fa-times", "fa-bars");
+               menuOpen = false;
+            });
+         });
+         window.addEventListener("resize", () => {
+            if (window.innerWidth >= 768) {
+               document.getElementById("nav").classList.remove("open");
+               document.getElementById("menu-icon").classList.replace("fa-times", "fa-bars");
+               menuOpen = false;
+            }
+         });
+         // Stack operations
+         let stack = [];
+         function updateStats() {
+            const top = stack[stack.length - 1];
+            const max = Math.max(...stack);
+            const min = Math.min(...stack);
+            const sum = stack.reduce((a, b) => a + b, 0);
+            const avg = (sum / stack.length).toFixed(2);
+            document.getElementById("top").innerText = stack.length ? top : "-";
+            document.getElementById("max").innerText = stack.length ? max : "-";
+            document.getElementById("min").innerText = stack.length ? min : "-";
+            document.getElementById("sum").innerText = stack.length ? sum : "-";
+            document.getElementById("avg").innerText = stack.length ? avg : "-";
+            document.getElementById("count").innerText = stack.length;
+         }
+         function renderStack() {
+            const container = document.getElementById("stack-container");
+            container.innerHTML = "";
+            stack.forEach((item) => {
+               const div = document.createElement("div");
+               div.className = "stack-item";
+               div.innerText = item;
+               container.appendChild(div);
+            });
+         }
+         function push() {
+            const input = document.getElementById("stack-input");
+            const value = parseInt(input.value);
+            if (!isNaN(value)) {
+               stack.push(value);
+               input.value = "";
+               renderStack();
+               updateStats();
+            }
+         }
+         function pop() {
+            if (stack.length > 0) {
+               stack.pop();
+               renderStack();
+               updateStats();
+            } else {
+               alert("Stack is empty!");
+            }
+         }
+         function peek() {
+            if (stack.length > 0) {
+               alert("Top element: " + stack[stack.length - 1]);
+            } else {
+               alert("Stack is empty!");
+            }
+         }
+         function printStack() {
+            if (stack.length > 0) {
+               alert("Stack: " + stack.join(", "));
+            } else {
+               alert("Stack is empty!");
+            }
+         }
+         function openSearchMenu() {
+            let choice = prompt(
+               `Choose an option:
+               1 - isFound(value)
+               2 - getIndex(value)
+               3 - getElement(index)
+               4 - getMiddle()
+               5 - getLast()`
+            );
+            switch (choice) {
+               case "1":
+                  isFound(parseInt(prompt("Enter value:")));
+                  break;
+               case "2":
+                  getIndex(parseInt(prompt("Enter value:")));
+                  break;
+               case "3":
+                  getElement(parseInt(prompt("Enter index:")));
+                  break;
+               case "4":
+                  getMiddle();
+                  break;
+               case "5":
+                  getLast();
+                  break;
+               default:
+                  alert("Invalid choice");
+            }
+         }
+         function swapData() {
+            let val1 = prompt("Enter first value to swap:");
+            let val2 = prompt("Enter second value to swap:");
+            if (val1 === null || val2 === null) return;
+            let idx1 = stack.indexOf(Number(val1));
+            let idx2 = stack.indexOf(Number(val2));
+            if (idx1 === -1 || idx2 === -1) {
+               alert("One or both values not found in the stack.");
+               return;
+            }
+            [stack[idx1], stack[idx2]] = [stack[idx2], stack[idx1]];
+            renderStack();
+            updateStats();
+         }
+         function swapIndex() {
+            const i1 = parseInt(prompt("Enter first index:"));
+            const i2 = parseInt(prompt("Enter second index:"));
+            if (i1 < 0 || i1 >= stack.length || i2 < 0 || i2 >= stack.length)
+               return alert("Invalid indices");
+            [stack[i1], stack[i2]] = [stack[i2], stack[i1]];
+            renderStack();
+            updateStats();
+         }
+         function removeDuplicates() {
+            stack = [...new Set(stack)];
+            renderStack();
+            updateStats();
+         }
+         function reverseStack() {
+            stack.reverse();
+            renderStack();
+            updateStats();
+         }
+         function randomize() {
+            if (stack.length === 0) {
+               alert("Stack is empty!");
+               return;
+            }
+            for (let i = stack.length - 1; i > 0; i--) {
+               const j = Math.floor(Math.random() * (i + 1));
+               [stack[i], stack[j]] = [stack[j], stack[i]];
+            }
+            renderStack();
+            updateStats();
+         }
+         function sortStack() {
+            stack.sort((a, b) => a - b);
+            renderStack();
+            updateStats();
+         }
+         function clearStack() {
+            stack = [];
+            renderStack();
+            updateStats();
+         }
+         function isFound(value) {
+            alert(stack.includes(value) ? "Value exists" : "Value not found");
+         }
+         function getIndex(value) {
+            const idx = stack.indexOf(value);
+            alert(idx !== -1 ? "Index: " + idx : "Value not found");
+         }
+         function getElement(index) {
+            alert(
+               stack[index] !== undefined ? "Element: " + stack[index] : "Invalid index"
+            );
+         }
+         function getMiddle() {
+            if (stack.length === 0)
+               return alert("Stack is empty");
+            const mid = Math.floor(stack.length / 2);
+            alert("Middle element: " + stack[mid]);
+         }
+         function getLast() {
+            if (stack.length === 0)
+               return alert("Stack is empty");
+            alert("Last element: " + stack[stack.length - 1]);
+         }
+         function openHelp() {
+            document.getElementById("helpOverlay").style.display = "block";
+         }
+         function closeHelp() {
+            document.getElementById("helpOverlay").style.display = "none";
+         }
+         window.addEventListener("click", function (e) {
+            const overlay = document.getElementById("helpOverlay");
+            const popup = document.querySelector(".popup");
+            if (e.target === overlay) {
+               closeHelp();
+            }
+         });
+         window.onload = function () {
+            openHelp();
+         };
+      </script>
+   </body>
+</html>
