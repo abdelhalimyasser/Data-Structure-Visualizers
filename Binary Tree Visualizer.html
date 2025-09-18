@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+      <title>Binary Tree Visualizer | Interactive Tool</title>
+      <meta name="description"
+         content="A simple and interactive binary tree visualizer to help you understand how binary trees work in programming and data structures." />
+      <meta name="keywords"
+         content="binary tree visualizer, data structures, programming, algorithms, JavaScript, coding tools, tree visualization" />
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+      <style>
+         *,
+         html {
+         margin: 0;
+         padding: 0;
+         box-sizing: border-box;
+         }
+         body {
+         font-family: Arial, sans-serif;
+         text-align: center;
+         background-color: #1A1A1D;
+         margin: 0;
+         padding: 20px;
+         display: flex;
+         flex-direction: column;
+         min-height: 100vh;
+         }
+         main {
+         flex: 1;
+         display: flex;
+         flex-direction: column;
+         align-items: center;
+         justify-content: center;
+         }
+         header {
+         top: 0;
+         z-index: 1000;
+         width: 100%;
+         display: flex;
+         justify-content: space-between;
+         align-items: center;
+         padding: 10px 20px;
+         background-color: #1A1A1D;
+         margin-bottom: 10px;
+         }
+         header h1 {
+         color: #fff;
+         font-size: 24px;
+         margin: 0;
+         }
+         header h1 a {
+         color: #fff;
+         text-decoration: none;
+         }
+         .hamburger {
+         display: none;
+         cursor: pointer;
+         z-index: 1001;
+         }
+         .hamburger i {
+         font-size: 24px;
+         color: #fff;
+         }
+         .nav {
+         display: flex;
+         }
+         .nav.open {
+         display: block;
+         }
+         .nav-list {
+         list-style: none;
+         display: flex;
+         gap: 25px;
+         }
+         .nav-link {
+         text-decoration: none;
+         color: #fff;
+         font-size: 18px;
+         font-weight: 500;
+         transition: color 0.3s;
+         }
+         .nav-link:hover {
+         color: #00BFFF;
+         }
+         @media (max-width: 767px) {
+         .hamburger {
+         display: flex;
+         align-items: center;
+         }
+         .nav {
+         position: fixed;
+         top: 0;
+         right: 0;
+         height: 100vh;
+         width: 70vw;
+         background-color: #1A1A1D;
+         transform: translateX(100%);
+         transition: transform 0.2s ease-in-out;
+         padding-top: 80px;
+         z-index: 999;
+         }
+         .nav.open {
+         transform: translateX(0);
+         }
+         .nav-list {
+         flex-direction: column;
+         gap: 30px;
+         align-items: center;
+         }
+         }
+         h1 {
+         margin-bottom: 10px;
+         color: #fff;
+         }
+         .subtitle {
+         color: #bbb;
+         margin-bottom: 20px;
+         }
+         .controls {
+         margin-bottom: 20px;
+         }
+         .btn-group {
+         margin-top: 10px;
+         }
+         input[type="number"] {
+         padding: 10px;
+         margin: 5px;
+         font-size: 16px;
+         width: 185px;
+         border: 2px solid #666;
+         border-radius: 8px;
+         background-color: #2a2a2e;
+         color: white;
+         text-align: center;
+         transition: all 0.3s ease;
+         }
+         input[type="number"]:focus {
+         border-color: #00BFFF;
+         outline: none;
+         }
+         button {
+         padding: 10px 15px;
+         font-size: 15px;
+         margin: 5px;
+         cursor: pointer;
+         background: rgb(0,0,128);
+         background: linear-gradient(159deg, rgba(0,0,128,1) 0%, rgba(0,191,255,1) 100%);
+         color: white;
+         border: none;
+         border-radius: 8px;
+         transition: all 0.3s ease;
+         }
+         button:hover {
+         background: linear-gradient(159deg, rgba(0,191,255,1) 0%, rgba(0,0,128,1) 100%);
+         transform: translateY(-2px);
+         }
+         .tree-container {
+         display: flex;
+         align-items: center;
+         justify-content: center;
+         min-height: 400px;
+         width: 90%;
+         max-width: 1200px;
+         margin: 0 auto 20px;
+         border: 2px solid #00BFFF;
+         border-radius: 12px;
+         padding: 20px;
+         background-color: #2b2b2f;
+         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+         overflow: auto;
+         position: relative;
+         }
+         .tree-node {
+         position: absolute;
+         width: 50px;
+         height: 50px;
+         display: flex;
+         align-items: center;
+         justify-content: center;
+         background: rgb(0,0,128);
+         background: linear-gradient(159deg, rgba(0,0,128,1) 0%, rgba(0,191,255,1) 100%);
+         color: white;
+         border-radius: 50%;
+         font-weight: bold;
+         font-size: 14px;
+         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+         transition: all 0.3s ease;
+         cursor: pointer;
+         }
+         .tree-node:hover {
+         transform: scale(1.1);
+         box-shadow: 0 4px 15px rgba(0, 191, 255, 0.5);
+         }
+         .tree-edge {
+         position: absolute;
+         background: #00BFFF;
+         transform-origin: top left;
+         }
+         .root-label {
+         position: absolute;
+         top: -30px;
+         left: 50%;
+         transform: translateX(-50%);
+         background: rgb(0,0,128);
+         background: linear-gradient(159deg, rgba(0,0,128,1) 0%, rgba(0,191,255,1) 100%);
+         color: white;
+         padding: 5px 10px;
+         border-radius: 15px;
+         font-size: 12px;
+         font-weight: bold;
+         }
+         .list-stats-wrapper {
+         display: flex;
+         gap: 20px;
+         justify-content: center;
+         align-items: flex-start;
+         margin-bottom: 20px;
+         flex-wrap: wrap;
+         }
+         @media (max-width: 767px) {
+         .list-stats-wrapper {
+         flex-direction: column;
+         align-items: center;
+         }
+         }
+         .stats {
+         background: #2b2b2f;
+         padding: 15px;
+         width: 250px;
+         margin-left: auto;
+         margin-right: auto;
+         text-align: left;
+         border-radius: 8px;
+         border: 2px solid #00BFFF;
+         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+         color: white;
+         margin-top: 0;
+         flex: 1;
+         }
+         .learn-more {
+         background-color: #2b2b2f;
+         padding: 15px;
+         border-radius: 8px;
+         width: 250px;
+         margin: auto;
+         border: 2px solid #00BFFF;
+         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+         margin-bottom: 60px;
+         margin-top: 0;
+         flex: 1;
+         }
+         .learn-more h2 {
+         color: #00BFFF;
+         }
+         .learn-more p {
+         color: #bbb;
+         margin: 10px 0;
+         }
+         .overlay {
+         display: none;
+         position: fixed;
+         top: 0;
+         left: 0;
+         width: 100%;
+         height: 100%;
+         background: rgba(0, 0, 0, 0.6);
+         z-index: 999;
+         margin-top: 10px;
+         }
+         .popup {
+         background: #fff;
+         padding: 20px;
+         border-radius: 10px;
+         max-width: 90%;
+         width: 600px;
+         margin: 50px auto;
+         position: relative;
+         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+         background: rgb(0,0,128);
+         background: linear-gradient(159deg, rgba(0,0,128,1) 0%, rgba(0,191,255,1) 100%);
+         color: white;
+         font-size: 16px;
+         text-align: left;
+         line-height: 1.5;
+         animation: fadeIn 0.4s ease;
+         max-height: 80vh;
+         overflow-y: auto;
+         }
+         .popup h2 {
+         color: #fff;
+         margin-bottom: 15px;
+         text-align: center;
+         }
+         .popup p {
+         color: #ddd;
+         margin-bottom: 10px;
+         }
+         .popup ul {
+         color: #ddd;
+         margin-left: 20px;
+         }
+         .popup ul li {
+         margin-bottom: 8px;
+         }
+         .close {
+         position: absolute;
+         right: 15px;
+         top: 10px;
+         font-size: 25px;
+         cursor: pointer;
+         }
+         .traversal-result {
+         margin-top: 10px;
+         padding: 10px;
+         background: #2b2b2f;
+         border-radius: 8px;
+         color: white;
+         border: 1px solid #00BFFF;
+         }
+         ::-webkit-scrollbar {
+         display: none;
+         }
+         * {
+         scrollbar-width: none; 
+         -ms-overflow-style: none;
+         }
+         .container {
+         overflow-x: auto;
+         -webkit-overflow-scrolling: touch;
+         }
+         @keyframes fadeIn {
+         from { opacity: 0; transform: scale(0.9); }
+         to { opacity: 1; transform: scale(1); }
+         }
+         @media (max-width: 600px) {
+         .popup {
+         width: 80%;
+         font-size: 14px;
+         margin: 20px auto;
+         }
+         .learn-more {
+         width: 75%;
+         }
+         }
+      </style>
+   </head>
+   <body>
+      <header>
+         <h1><a href="#">Binary Tree Visualizer</a></h1>
+         <div class="hamburger" onclick="toggleMenu()">
+            <i id="menu-icon" class="fas fa-bars"></i>
+         </div>
+         <nav class="nav" id="nav">
+            <ul class="nav-list" id="nav-list">
+               <li>
+                  <a href="#" class="nav-link" onclick="openHelp()">How to work</a>
+               </li>
+               <li>
+                  <a href="#" class="nav-link">View Implementation</a>
+               </li>
+               <li>
+                  <a href="#" class="nav-link">Github</a>
+               </li>
+               <li>
+                  <a href="#" class="nav-link">LinkedIn</a>
+               </li>
+            </ul>
+         </nav>
+      </header>
+      <main>
+         <h1 style="color: #00BFFF;">Binary Tree Visualizer</h1>
+         <p class="subtitle">
+            A simple binary tree visualizer to help you understand how binary trees work.
+         </p>
+         <div id="helpOverlay" class="overlay">
+            <div class="popup">
+               <span class="close" onclick="closeHelp()"><i class="fas fa-times"></i></span>
+               <h2>How Binary Tree Works</h2>
+               <p>
+                  <b>Binary Tree:</b> A hierarchical data structure where each node has at most two children, 
+                  referred to as left and right child.
+               </p>
+               <ul>
+                  <li>
+                     <b>insert(value)</b> - Add a new node to the tree following BST rules.
+                  </li>
+                  <li>
+                     <b>delete(value)</b> - Remove a node from the tree.
+                  </li>
+                  <li>
+                     <b>search(value)</b> - Find if value exists in the tree.
+                  </li>
+                  <li><b>inOrder()</b> - Traverse: Left → Root → Right.</li>
+                  <li><b>preOrder()</b> - Traverse: Root → Left → Right.</li>
+                  <li><b>postOrder()</b> - Traverse: Left → Right → Root.</li>
+                  <li><b>levelOrder()</b> - Traverse level by level (BFS).</li>
+                  <li><b>getHeight()</b> - Get the height of the tree.</li>
+                  <li><b>getSize()</b> - Get the number of nodes in the tree.</li>
+                  <li><b>getMin()</b> - Find the minimum value in the tree.</li>
+                  <li><b>getMax()</b> - Find the maximum value in the tree.</li>
+                  <li><b>clear()</b> - Remove all nodes from the tree.</li>
+               </ul>
+            </div>
+         </div>
+         <div class="controls">
+            <input type="number" id="tree-input" placeholder="Enter a number" />
+            <div class="btn-group">
+               <button onclick="insertNode()">Insert</button>
+               <button onclick="deleteNode()">Delete</button>
+               <button onclick="searchNode()">Search</button>
+               <button onclick="inOrderTraversal()">In-Order</button>
+               <button onclick="preOrderTraversal()">Pre-Order</button>
+               <button onclick="postOrderTraversal()">Post-Order</button>
+               <button onclick="levelOrderTraversal()">Level-Order</button>
+               <button onclick="findMin()">Find Min</button>
+               <button onclick="findMax()">Find Max</button>
+               <button onclick="getTreeHeight()">Get Height</button>
+               <button onclick="clearTree()">Clear</button>
+            </div>
+         </div>
+         <div id="tree-container" class="tree-container"></div>
+         <div id="traversal-result" class="traversal-result" style="display: none;"></div>
+         <div class="list-stats-wrapper">
+            <div class="stats" id="stats">
+               <strong>Root:</strong> <span id="root">-</span><br />
+               <strong>Size:</strong> <span id="size">0</span><br />
+               <strong>Height:</strong> <span id="height">0</span><br />
+               <strong>Is Empty:</strong> <span id="isEmpty">Yes</span><br />
+               <strong>Min Value:</strong> <span id="minVal">-</span><br />
+               <strong>Max Value:</strong> <span id="maxVal">-</span><br />
+               <strong>Is Balanced:</strong> <span id="balanced">-</span><br />
+            </div>
+            <div class="learn-more" id="learn-more">
+               <h2>Learn More Data Structures</h2>
+               <div class="controls">
+                  <button onclick="window.open('#', '_blank')">Linked List</button>
+                  <button onclick="window.open('#', '_blank')">Stack</button>
+                  <button onclick="window.open('#', '_blank')">Queue</button>
+                  <button onclick="window.open('#', '_blank')">Graph</button>
+               </div>
+            </div>
+         </div>
+      </main>
+      <footer>
+         <p style="color: #fff">
+            Created by
+            <a href="#" target="_blank"
+               style="color: #00BFFF; text-decoration: none">
+            Abdelhalim Yasser</a>
+         </p>
+         <p style="color: #fff">
+            <a href="#" style="color: #fff; text-decoration: none">Binary Tree Visualizer</a>
+            © 2025
+         </p>
+      </footer>
+      <script>
+         // Toggle menu for mobile view
+         
+         let menuOpen = false;
+         
+         function toggleMenu() {
+         const nav = document.getElementById("nav");
+         const icon = document.getElementById("menu-icon");
+         menuOpen = !menuOpen;
+         
+         if (menuOpen) {
+         nav.classList.add("open");
+         icon.classList.replace("fa-bars", "fa-times");
+         } else {
+         nav.classList.remove("open");
+         icon.classList.replace("fa-times", "fa-bars");
+         }
+         }
+         
+         document.querySelectorAll("#nav a").forEach(link => {
+         link.addEventListener("click", () => {
+         const nav = document.getElementById("nav");
+         const icon = document.getElementById("menu-icon");
+         
+         nav.classList.remove("open");
+         icon.classList.replace("fa-times", "fa-bars");
+         menuOpen = false;
+         });
+         });
+         
+         window.addEventListener("resize", () => {
+         if (window.innerWidth >= 768) {
+         document.getElementById("nav").classList.remove("open");
+         document
+         .getElementById("menu-icon")
+         .classList.replace("fa-times", "fa-bars");
+         menuOpen = false;
+         }
+         });
+         
+          // Binary Tree Implementation
+          class TreeNode {
+              constructor(data) {
+                  this.data = data;
+                  this.left = null;
+                  this.right = null;
+              }
+          }
+          
+          class BinarySearchTree {
+              constructor() {
+                  this.root = null;
+              }
+          
+              insert(data) {
+                  const newNode = new TreeNode(data);
+                  if (!this.root) {
+                      this.root = newNode;
+                      return;
+                  }
+                  
+                  this.insertNode(this.root, newNode);
+              }
+              
+              insertNode(node, newNode) {
+                  if (newNode.data < node.data) {
+                      if (!node.left) {
+                          node.left = newNode;
+                      } else {
+                          this.insertNode(node.left, newNode);
+                      }
+                  } else if (newNode.data > node.data) {
+                      if (!node.right) {
+                          node.right = newNode;
+                      } else {
+                          this.insertNode(node.right, newNode);
+                      }
+                  }
+              }
+          
+              delete(data) {
+                  this.root = this.deleteNode(this.root, data);
+              }
+              
+              deleteNode(node, data) {
+                  if (!node) return null;
+                  
+                  if (data < node.data) {
+                      node.left = this.deleteNode(node.left, data);
+                  } else if (data > node.data) {
+                      node.right = this.deleteNode(node.right, data);
+                  } else {
+                      if (!node.left && !node.right) {
+                          return null;
+                      }
+                      if (!node.left) {
+                          return node.right;
+                      }
+                      if (!node.right) {
+                          return node.left;
+                      }
+                      
+                      const minRight = this.findMin(node.right);
+                      node.data = minRight.data;
+                      node.right = this.deleteNode(node.right, minRight.data);
+                  }
+                  return node;
+              }
+          
+              search(data) {
+                  return this.searchNode(this.root, data);
+              }
+              
+              searchNode(node, data) {
+                  if (!node) return false;
+                  if (data === node.data) return true;
+                  if (data < node.data) return this.searchNode(node.left, data);
+                  return this.searchNode(node.right, data);
+              }
+          
+              inOrder() {
+                  const result = [];
+                  this.inOrderHelper(this.root, result);
+                  return result;
+              }
+              
+              inOrderHelper(node, result) {
+                  if (node) {
+                      this.inOrderHelper(node.left, result);
+                      result.push(node.data);
+                      this.inOrderHelper(node.right, result);
+                  }
+              }
+          
+              preOrder() {
+                  const result = [];
+                  this.preOrderHelper(this.root, result);
+                  return result;
+              }
+              
+              preOrderHelper(node, result) {
+                  if (node) {
+                      result.push(node.data);
+                      this.preOrderHelper(node.left, result);
+                      this.preOrderHelper(node.right, result);
+                  }
+              }
+          
+              postOrder() {
+                  const result = [];
+                  this.postOrderHelper(this.root, result);
+                  return result;
+              }
+              
+              postOrderHelper(node, result) {
+                  if (node) {
+                      this.postOrderHelper(node.left, result);
+                      this.postOrderHelper(node.right, result);
+                      result.push(node.data);
+                  }
+              }
+          
+              levelOrder() {
+                  if (!this.root) return [];
+                  
+                  const result = [];
+                  const queue = [this.root];
+                  
+                  while (queue.length > 0) {
+                      const node = queue.shift();
+                      result.push(node.data);
+                      
+                      if (node.left) queue.push(node.left);
+                      if (node.right) queue.push(node.right);
+                  }
+                  
+                  return result;
+              }
+          
+              getHeight() {
+                  return this.getNodeHeight(this.root);
+              }
+              
+              getNodeHeight(node) {
+                  if (!node) return 0;
+                  return 1 + Math.max(this.getNodeHeight(node.left), this.getNodeHeight(node.right));
+              }
+          
+              getSize() {
+                  return this.getSizeHelper(this.root);
+              }
+              
+              getSizeHelper(node) {
+                  if (!node) return 0;
+                  return 1 + this.getSizeHelper(node.left) + this.getSizeHelper(node.right);
+              }
+          
+              findMin(node = this.root) {
+                  if (!node) return null;
+                  while (node.left) {
+                      node = node.left;
+                  }
+                  return node;
+              }
+          
+              findMax(node = this.root) {
+                  if (!node) return null;
+                  while (node.right) {
+                      node = node.right;
+                  }
+                  return node;
+              }
+          
+              isBalanced() {
+                  return this.checkBalance(this.root) !== -1;
+              }
+              
+              checkBalance(node) {
+                  if (!node) return 0;
+                  
+                  const leftHeight = this.checkBalance(node.left);
+                  if (leftHeight === -1) return -1;
+                  
+                  const rightHeight = this.checkBalance(node.right);
+                  if (rightHeight === -1) return -1;
+                  
+                  if (Math.abs(leftHeight - rightHeight) > 1) return -1;
+                  
+                  return Math.max(leftHeight, rightHeight) + 1;
+              }
+          
+              clear() {
+                  this.root = null;
+              }
+          }
+          
+          let binaryTree = new BinarySearchTree();
+          
+          function renderTree() {
+              const container = document.getElementById("tree-container");
+              container.innerHTML = "";
+          
+              if (!binaryTree.root) {
+                  container.innerHTML = '<div style="color: #bbb;">Empty Tree</div>';
+                  updateStats();
+                  return;
+              }
+          
+              const positions = calculatePositions(binaryTree.root);
+              drawTree(container, binaryTree.root, positions);
+              updateStats();
+          }
+          
+          function calculatePositions(root) {
+              const positions = new Map();
+              const levels = new Map();
+              
+              function traverse(node, level, order) {
+                  if (!node) return order;
+                  
+                  order = traverse(node.left, level + 1, order);
+                  
+                  if (!levels.has(level)) {
+                      levels.set(level, []);
+                  }
+                  levels.get(level).push(node);
+                  
+                  positions.set(node, { x: order * 80 + 200, y: level * 80 + 50 });
+                  order++;
+                  
+                  return traverse(node.right, level + 1, order);
+              }
+              
+              traverse(root, 0, 0);
+              return positions;
+          }
+          
+          function drawTree(container, root, positions) {
+              // Draw edges first
+              drawEdges(container, root, positions);
+              
+              // Draw nodes
+              drawNodes(container, root, positions);
+          }
+          
+          function drawEdges(container, node, positions) {
+              if (!node) return;
+              
+              const nodePos = positions.get(node);
+              
+              if (node.left) {
+                  const leftPos = positions.get(node.left);
+                  createEdge(container, nodePos, leftPos);
+                  drawEdges(container, node.left, positions);
+              }
+              
+              if (node.right) {
+                  const rightPos = positions.get(node.right);
+                  createEdge(container, nodePos, rightPos);
+                  drawEdges(container, node.right, positions);
+              }
+          }
+          
+          function createEdge(container, from, to) {
+              const edge = document.createElement("div");
+              edge.className = "tree-edge";
+              
+              const dx = to.x - from.x + 25;
+              const dy = to.y - from.y + 25;
+              const length = Math.sqrt(dx * dx + dy * dy);
+              const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+              
+              edge.style.width = length + "px";
+              edge.style.height = "2px";
+              edge.style.left = from.x + 25 + "px";
+              edge.style.top = from.y + 25 + "px";
+              edge.style.transform = `rotate(${angle}deg)`;
+              
+              container.appendChild(edge);
+          }
+          
+          function drawNodes(container, node, positions) {
+              if (!node) return;
+              
+              const nodeDiv = document.createElement("div");
+              nodeDiv.className = "tree-node";
+              nodeDiv.textContent = node.data;
+              
+              const pos = positions.get(node);
+              nodeDiv.style.left = pos.x + "px";
+              nodeDiv.style.top = pos.y + "px";
+              
+              if (node === binaryTree.root) {
+                  const rootLabel = document.createElement("div");
+                  rootLabel.className = "root-label";
+                  rootLabel.textContent = "ROOT";
+                  nodeDiv.appendChild(rootLabel);
+              }
+              
+              container.appendChild(nodeDiv);
+              
+              drawNodes(container, node.left, positions);
+              drawNodes(container, node.right, positions);
+          }
+          
+          function updateStats() {
+              const root = binaryTree.root ? binaryTree.root.data : "-";
+              const size = binaryTree.getSize();
+              const height = binaryTree.getHeight();
+              const isEmpty = size === 0;
+              const minNode = binaryTree.findMin();
+              const maxNode = binaryTree.findMax();
+              const minVal = minNode ? minNode.data : "-";
+              const maxVal = maxNode ? maxNode.data : "-";
+              const balanced = size === 0 ? "-" : (binaryTree.isBalanced() ? "Yes" : "No");
+          
+              document.getElementById("root").innerText = root;
+              document.getElementById("size").innerText = size;
+              document.getElementById("height").innerText = height;
+              document.getElementById("isEmpty").innerText = isEmpty ? "Yes" : "No";
+              document.getElementById("minVal").innerText = minVal;
+              document.getElementById("maxVal").innerText = maxVal;
+              document.getElementById("balanced").innerText = balanced;
+          }
+          
+          function getInputValue() {
+              const input = document.getElementById("tree-input");
+              const value = parseInt(input.value);
+              if (isNaN(value)) {
+                  alert("Please enter a valid number");
+                  return null;
+              }
+              input.value = "";
+              return value;
+          }
+          
+          function showTraversalResult(title, result) {
+              const resultDiv = document.getElementById("traversal-result");
+              resultDiv.innerHTML = `<strong>${title}:</strong> ${result.join(" → ")}`;
+              resultDiv.style.display = "block";
+              
+              setTimeout(() => {
+                  resultDiv.style.display = "none";
+              }, 5000);
+          }
+          
+          function insertNode() {
+              const value = getInputValue();
+              if (value !== null) {
+                  if (binaryTree.search(value)) {
+                      alert("Value " + value + " already exists in the tree!");
+                      return;
+                  }
+                  binaryTree.insert(value);
+                  renderTree();
+              }
+          }
+          
+          function deleteNode() {
+              const value = parseInt(prompt("Enter value to delete:"));
+              if (isNaN(value)) {
+                  alert("Please enter a valid number");
+                  return;
+              }
+              
+              if (!binaryTree.search(value)) {
+                  alert("Value " + value + " not found in the tree!");
+                  return;
+              }
+              
+              binaryTree.delete(value);
+              alert("Value " + value + " deleted from tree");
+              renderTree();
+          }
+          
+          function searchNode() {
+              const value = parseInt(prompt("Enter value to search:"));
+              if (isNaN(value)) {
+                  alert("Please enter a valid number");
+                  return;
+              }
+              
+              const found = binaryTree.search(value);
+              if (found) {
+                  alert("Value " + value + " found in the tree!");
+              } else {
+                  alert("Value " + value + " not found in the tree!");
+              }
+          }
+          
+          function inOrderTraversal() {
+              if (binaryTree.getSize() === 0) {
+                  alert("Tree is empty!");
+                  return;
+              }
+              const result = binaryTree.inOrder();
+              showTraversalResult("In-Order Traversal (Left → Root → Right)", result);
+          }
+          
+          function preOrderTraversal() {
+              if (binaryTree.getSize() === 0) {
+                  alert("Tree is empty!");
+                  return;
+              }
+              const result = binaryTree.preOrder();
+              showTraversalResult("Pre-Order Traversal (Root → Left → Right)", result);
+          }
+          
+          function postOrderTraversal() {
+              if (binaryTree.getSize() === 0) {
+                  alert("Tree is empty!");
+                  return;
+              }
+              const result = binaryTree.postOrder();
+              showTraversalResult("Post-Order Traversal (Left → Right → Root)", result);
+          }
+          
+          function levelOrderTraversal() {
+              if (binaryTree.getSize() === 0) {
+                  alert("Tree is empty!");
+                  return;
+              }
+              const result = binaryTree.levelOrder();
+              showTraversalResult("Level-Order Traversal (Breadth-First)", result);
+          }
+          
+          function findMin() {
+              if (binaryTree.getSize() === 0) {
+                  alert("Tree is empty!");
+                  return;
+              }
+              const minNode = binaryTree.findMin();
+              alert("Minimum value in tree: " + minNode.data);
+          }
+          
+          function findMax() {
+              if (binaryTree.getSize() === 0) {
+                  alert("Tree is empty!");
+                  return;
+              }
+              const maxNode = binaryTree.findMax();
+              alert("Maximum value in tree: " + maxNode.data);
+          }
+          
+          function getTreeHeight() {
+              const height = binaryTree.getHeight();
+              if (height === 0) {
+                  alert("Tree is empty! Height: 0");
+              } else {
+                  alert("Tree height: " + height);
+              }
+          }
+          
+          function clearTree() {
+              if (binaryTree.getSize() === 0) {
+                  alert("Tree is already empty!");
+                  return;
+              }
+              
+              if (confirm("Are you sure you want to clear the entire tree?")) {
+                  binaryTree.clear();
+                  renderTree();
+                  alert("Tree cleared successfully!");
+              }
+          }
+          
+          function openHelp() {
+              document.getElementById("helpOverlay").style.display = "block";
+          }
+          
+          function closeHelp() {
+              document.getElementById("helpOverlay").style.display = "none";
+          }
+          
+          window.addEventListener("load", () => {
+              openHelp();
+              renderTree();
+          });
+          
+          window.addEventListener("click", function (e) {
+              const overlay = document.getElementById("helpOverlay");
+              if (e.target === overlay) {
+                  closeHelp();
+              }
+          });
+      </script>
+   </body>
+</html>
