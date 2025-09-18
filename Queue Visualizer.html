@@ -317,13 +317,13 @@
                   <a href="#" class="nav-link" onclick="openHelp()">How to work</a>
                </li>
                <li>
-                  <a href="https://github.com/abdelhalim-yasser/Queue" class="nav-link">View Implementation</a>
+                  <a href="#" class="nav-link">View Implementation</a>
                </li>
                <li>
-                  <a href="https://github.com/abdelhalim-yasser" class="nav-link">Github</a>
+                  <a href="https://github.com/abdelhalimyasser" class="nav-link">Github</a>
                </li>
                <li>
-                  <a href="https://www.linkedin.com/in/abdelhalim-yasser" class="nav-link">LinkedIn</a>
+                  <a href="https://www.linkedin.com/in/abdelhalimyasser" class="nav-link">LinkedIn</a>
                </li>
             </ul>
          </nav>
@@ -396,8 +396,9 @@
             <div class="learn-more" id="learn-more">
                <h2>Learn More Data Structures</h2>
                <div class="controls">
-                  <a href="https://abdelhalim-yasser.github.io/Stack/"><button>Stack</button></a>
-                  <a href="https://abdelhalim-yasser.github.io/LinkedList/"><button>Linked List</button></a>
+                  <a href="Stack Visualizer.html"><button>Stack</button></a>
+                  <a href="Linked List Visualizer.html"><button>Linked List</button></a>
+                  <a href="Binary Tree Visualizer.html"><button>Binary Tree</button></a>a>
                </div>
             </div>
          </div>
@@ -417,31 +418,34 @@
       <script>
          // Toggle menu for mobile view
          let menuOpen = false;
-         
          function toggleMenu() {
-         const nav = document.getElementById("nav");
-         const icon = document.getElementById("menu-icon");
-         menuOpen = !menuOpen;
-         
-         if (menuOpen) {
-             nav.classList.add("open");
-             icon.classList.replace("fa-bars", "fa-times");
-         } else {
-             nav.classList.remove("open");
-             icon.classList.replace("fa-times", "fa-bars");
+            const nav = document.getElementById("nav");
+            const icon = document.getElementById("menu-icon");
+            menuOpen = !menuOpen;
+            if (menuOpen) {
+               nav.classList.add("open");
+               icon.classList.replace("fa-bars", "fa-times");
+            } else {
+               nav.classList.remove("open");
+               icon.classList.replace("fa-times", "fa-bars");
+            }
          }
-         }
-         
-         window.addEventListener("resize", () => {
-         if (window.innerWidth >= 768) {
-             document.getElementById("nav").classList.remove("open");
-             document
-                 .getElementById("menu-icon")
-                 .classList.replace("fa-times", "fa-bars");
-             menuOpen = false;
-         }
+         document.querySelectorAll("#nav a").forEach(link => {
+            link.addEventListener("click", () => {
+               const nav = document.getElementById("nav");
+               const icon = document.getElementById("menu-icon");
+               nav.classList.remove("open");
+               icon.classList.replace("fa-times", "fa-bars");
+               menuOpen = false;
+            });
          });
-         
+         window.addEventListener("resize", () => {
+            if (window.innerWidth >= 768) {
+               document.getElementById("nav").classList.remove("open");
+               document.getElementById("menu-icon").classList.replace("fa-times", "fa-bars");
+               menuOpen = false;
+            }
+         });
          
          // Queue Implementation
          let queue = [];
@@ -638,6 +642,17 @@
          openHelp();
          renderQueue();
          });
+         
+         window.addEventListener("click", function (e) {
+            const overlay = document.getElementById("helpOverlay");
+            const popup = document.querySelector(".popup");
+            if (e.target === overlay) {
+               closeHelp();
+            }
+         });
+         window.onload = function () {
+            openHelp();
+         };
       </script>
    </body>
 </html>
