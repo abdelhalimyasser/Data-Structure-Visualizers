@@ -4,7 +4,7 @@
       <meta charset="UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-      <title>Binary Tree Visualizer | Interactive Tool</title>
+      <title>Binary Tree Visualizer | Interactive Tool (Fixed)</title>
       <meta name="description"
          content="A simple and interactive binary tree visualizer to help you understand how binary trees work in programming and data structures." />
       <meta name="keywords"
@@ -145,7 +145,6 @@
          font-size: 15px;
          margin: 5px;
          cursor: pointer;
-         background: rgb(0,0,128);
          background: linear-gradient(159deg, rgba(0,0,128,1) 0%, rgba(0,191,255,1) 100%);
          color: white;
          border: none;
@@ -157,59 +156,66 @@
          transform: translateY(-2px);
          }
          .tree-container {
-         display: flex;
+         display: block;
          align-items: center;
          justify-content: center;
-         min-height: 400px;
+         min-height: 500px;
          width: 90%;
-         max-width: 1200px;
+         max-width: 1400px;
          margin: 0 auto 20px;
          border: 2px solid #00BFFF;
          border-radius: 12px;
-         padding: 20px;
+         padding: 40px;
          background-color: #2b2b2f;
          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
          overflow: auto;
          position: relative;
          }
+         .canvas-inner {
+         position: relative;
+         height: 100%;
+         }
          .tree-node {
          position: absolute;
-         width: 50px;
-         height: 50px;
+         width: 60px;
+         height: 60px;
          display: flex;
          align-items: center;
          justify-content: center;
-         background: rgb(0,0,128);
          background: linear-gradient(159deg, rgba(0,0,128,1) 0%, rgba(0,191,255,1) 100%);
          color: white;
          border-radius: 50%;
          font-weight: bold;
-         font-size: 14px;
-         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+         font-size: 16px;
+         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
          transition: all 0.3s ease;
          cursor: pointer;
+         border: 2px solid #ffffff33;
+         transform: translate(-50%, -50%); /* center by position */
          }
          .tree-node:hover {
-         transform: scale(1.1);
-         box-shadow: 0 4px 15px rgba(0, 191, 255, 0.5);
+         transform: translate(-50%, -50%) scale(1.15);
+         box-shadow: 0 4px 20px rgba(0, 191, 255, 0.6);
          }
          .tree-edge {
          position: absolute;
-         background: #00BFFF;
-         transform-origin: top left;
+         background: linear-gradient(to right, #00BFFF, #ffffff);
+         transform-origin: 0 0; /* top-left */
+         z-index: -1;
+         height: 3px;
          }
          .root-label {
          position: absolute;
-         top: -30px;
+         top: -28px;
          left: 50%;
          transform: translateX(-50%);
-         background: rgb(0,0,128);
          background: linear-gradient(159deg, rgba(0,0,128,1) 0%, rgba(0,191,255,1) 100%);
          color: white;
-         padding: 5px 10px;
-         border-radius: 15px;
-         font-size: 12px;
+         padding: 4px 8px;
+         border-radius: 12px;
+         font-size: 11px;
          font-weight: bold;
+         border: 1px solid #ffffff33;
          }
          .list-stats-wrapper {
          display: flex;
@@ -265,28 +271,29 @@
          left: 0;
          width: 100%;
          height: 100%;
-         background: rgba(0, 0, 0, 0.6);
-         z-index: 999;
-         margin-top: 10px;
+         background: rgba(0, 0, 0, 0.7);
+         z-index: 2000;
+         overflow: auto;
          }
          .popup {
-         background: #fff;
-         padding: 20px;
-         border-radius: 10px;
-         max-width: 90%;
-         width: 600px;
-         margin: 50px auto;
-         position: relative;
-         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-         background: rgb(0,0,128);
          background: linear-gradient(159deg, rgba(0,0,128,1) 0%, rgba(0,191,255,1) 100%);
+         padding: 25px;
+         border-radius: 12px;
+         max-width: 90%;
+         width: 650px;
+         margin: 80px auto;
+         position: relative;
+         box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
          color: white;
          font-size: 16px;
          text-align: left;
-         line-height: 1.5;
+         line-height: 1.6;
          animation: fadeIn 0.4s ease;
          max-height: 80vh;
          overflow-y: auto;
+         z-index: 2001;
+         word-wrap: break-word; /* prevent long words overflow */
+         white-space: normal;
          }
          .popup h2 {
          color: #fff;
@@ -307,24 +314,24 @@
          .close {
          position: absolute;
          right: 15px;
-         top: 10px;
-         font-size: 25px;
+         top: 15px;
+         font-size: 28px;
          cursor: pointer;
-         }
-         .traversal-result {
-         margin-top: 10px;
-         padding: 10px;
-         background: #2b2b2f;
-         border-radius: 8px;
-         color: white;
-         border: 1px solid #00BFFF;
+         color: #fff;
          }
          ::-webkit-scrollbar {
-         display: none;
+         width: 8px;
+         }
+         ::-webkit-scrollbar-track {
+         background: #2b2b2f;
+         }
+         ::-webkit-scrollbar-thumb {
+         background: #00BFFF;
+         border-radius: 4px;
          }
          * {
-         scrollbar-width: none; 
-         -ms-overflow-style: none;
+         scrollbar-width: thin;
+         scrollbar-color: #00BFFF #2b2b2f;
          }
          .container {
          overflow-x: auto;
@@ -336,12 +343,22 @@
          }
          @media (max-width: 600px) {
          .popup {
-         width: 80%;
+         width: 85%;
          font-size: 14px;
-         margin: 20px auto;
+         margin: 40px auto;
+         padding: 20px;
          }
          .learn-more {
-         width: 75%;
+         width: 80%;
+         }
+         .tree-container {
+         min-height: 400px;
+         padding: 20px;
+         }
+         .tree-node {
+         width: 50px;
+         height: 50px;
+         font-size: 14px;
          }
          }
       </style>
@@ -379,7 +396,7 @@
                <span class="close" onclick="closeHelp()"><i class="fas fa-times"></i></span>
                <h2>How Binary Tree Works</h2>
                <p>
-                  <b>Binary Tree:</b> A hierarchical data structure where each node has at most two children, 
+                  <b>Binary Tree:</b> A hierarchical data structure where each node has at most two children,
                   referred to as left and right child.
                </p>
                <ul>
@@ -420,8 +437,9 @@
                <button onclick="clearTree()">Clear</button>
             </div>
          </div>
-         <div id="tree-container" class="tree-container"></div>
-         <div id="traversal-result" class="traversal-result" style="display: none;"></div>
+         <div id="tree-container" class="tree-container">
+            <div id="canvasInner" class="canvas-inner"></div>
+         </div>
          <div class="list-stats-wrapper">
             <div class="stats" id="stats">
                <strong>Root:</strong> <span id="root">-</span><br />
@@ -435,10 +453,9 @@
             <div class="learn-more" id="learn-more">
                <h2>Learn More Data Structures</h2>
                <div class="controls">
-                  <button onclick="window.open('#', '_blank')">Linked List</button>
-                  <button onclick="window.open('#', '_blank')">Stack</button>
-                  <button onclick="window.open('#', '_blank')">Queue</button>
-                  <button onclick="window.open('#', '_blank')">Graph</button>
+                  <button onclick="window.open('Stack Visualizer.html', '_blank')">Stack</button>
+                  <button onclick="window.open('Queue Visualizer.html', '_blank')">Queue</button>
+                  <button onclick="window.open('Linked List Visualizer.html', '_blank')">Linked List</button>
                </div>
             </div>
          </div>
@@ -457,529 +474,482 @@
       </footer>
       <script>
          // Toggle menu for mobile view
-         
          let menuOpen = false;
-         
          function toggleMenu() {
-         const nav = document.getElementById("nav");
-         const icon = document.getElementById("menu-icon");
-         menuOpen = !menuOpen;
-         
-         if (menuOpen) {
-         nav.classList.add("open");
-         icon.classList.replace("fa-bars", "fa-times");
-         } else {
-         nav.classList.remove("open");
-         icon.classList.replace("fa-times", "fa-bars");
+             const nav = document.getElementById("nav");
+             const icon = document.getElementById("menu-icon");
+             menuOpen = !menuOpen;
+             if (menuOpen) {
+                 nav.classList.add("open");
+                 icon.classList.replace("fa-bars", "fa-times");
+             } else {
+                 nav.classList.remove("open");
+                 icon.classList.replace("fa-times", "fa-bars");
+             }
          }
-         }
-         
          document.querySelectorAll("#nav a").forEach(link => {
-         link.addEventListener("click", () => {
-         const nav = document.getElementById("nav");
-         const icon = document.getElementById("menu-icon");
-         
-         nav.classList.remove("open");
-         icon.classList.replace("fa-times", "fa-bars");
-         menuOpen = false;
+             link.addEventListener("click", () => {
+                 const nav = document.getElementById("nav");
+                 const icon = document.getElementById("menu-icon");
+                 nav.classList.remove("open");
+                 if (icon.classList.contains('fa-times')) icon.classList.replace("fa-times", "fa-bars");
+                 menuOpen = false;
+             });
          });
-         });
-         
-         window.addEventListener("resize", () => {
-         if (window.innerWidth >= 768) {
-         document.getElementById("nav").classList.remove("open");
-         document
-         .getElementById("menu-icon")
-         .classList.replace("fa-times", "fa-bars");
-         menuOpen = false;
+
+         // Binary Tree Implementation
+         class TreeNode {
+             constructor(data) {
+                 this.data = data;
+                 this.left = null;
+                 this.right = null;
+             }
          }
+         class BinarySearchTree {
+             constructor() {
+                 this.root = null;
+             }
+             insert(data) {
+                 const newNode = new TreeNode(data);
+                 if (!this.root) {
+                     this.root = newNode;
+                     return;
+                 }
+                 this.insertNode(this.root, newNode);
+             }
+             insertNode(node, newNode) {
+                 if (newNode.data < node.data) {
+                     if (!node.left) {
+                         node.left = newNode;
+                     } else {
+                         this.insertNode(node.left, newNode);
+                     }
+                 } else if (newNode.data > node.data) {
+                     if (!node.right) {
+                         node.right = newNode;
+                     } else {
+                         this.insertNode(node.right, newNode);
+                     }
+                 }
+                 // equal values are ignored (no duplicates)
+             }
+             delete(data) {
+                 this.root = this.deleteNode(this.root, data);
+             }
+             deleteNode(node, data) {
+                 if (!node) return null;
+                 if (data < node.data) {
+                     node.left = this.deleteNode(node.left, data);
+                 } else if (data > node.data) {
+                     node.right = this.deleteNode(node.right, data);
+                 } else {
+                     if (!node.left && !node.right) {
+                         return null;
+                     }
+                     if (!node.left) {
+                         return node.right;
+                     }
+                     if (!node.right) {
+                         return node.left;
+                     }
+                     const minRight = this.findMin(node.right);
+                     node.data = minRight.data;
+                     node.right = this.deleteNode(node.right, minRight.data);
+                 }
+                 return node;
+             }
+             search(data) {
+                 return this.searchNode(this.root, data);
+             }
+             searchNode(node, data) {
+                 if (!node) return false;
+                 if (data === node.data) return true;
+                 if (data < node.data) return this.searchNode(node.left, data);
+                 return this.searchNode(node.right, data);
+             }
+             inOrder() {
+                 const result = [];
+                 this.inOrderHelper(this.root, result);
+                 return result;
+             }
+             inOrderHelper(node, result) {
+                 if (node) {
+                     this.inOrderHelper(node.left, result);
+                     result.push(node.data);
+                     this.inOrderHelper(node.right, result);
+                 }
+             }
+             preOrder() {
+                 const result = [];
+                 this.preOrderHelper(this.root, result);
+                 return result;
+             }
+             preOrderHelper(node, result) {
+                 if (node) {
+                     result.push(node.data);
+                     this.preOrderHelper(node.left, result);
+                     this.preOrderHelper(node.right, result);
+                 }
+             }
+             postOrder() {
+                 const result = [];
+                 this.postOrderHelper(this.root, result);
+                 return result;
+             }
+             postOrderHelper(node, result) {
+                 if (node) {
+                     this.postOrderHelper(node.left, result);
+                     this.postOrderHelper(node.right, result);
+                     result.push(node.data);
+                 }
+             }
+             levelOrder() {
+                 if (!this.root) return [];
+                 const result = [];
+                 const queue = [this.root];
+                 while (queue.length > 0) {
+                     const node = queue.shift();
+                     result.push(node.data);
+                     if (node.left) queue.push(node.left);
+                     if (node.right) queue.push(node.right);
+                 }
+                 return result;
+             }
+             getHeight() {
+                 return this.getNodeHeight(this.root);
+             }
+             getNodeHeight(node) {
+                 if (!node) return 0;
+                 return 1 + Math.max(this.getNodeHeight(node.left), this.getNodeHeight(node.right));
+             }
+             getSize() {
+                 return this.getSizeHelper(this.root);
+             }
+             getSizeHelper(node) {
+                 if (!node) return 0;
+                 return 1 + this.getSizeHelper(node.left) + this.getSizeHelper(node.right);
+             }
+             findMin(node = this.root) {
+                 if (!node) return null;
+                 while (node.left) {
+                     node = node.left;
+                 }
+                 return node;
+             }
+             findMax(node = this.root) {
+                 if (!node) return null;
+                 while (node.right) {
+                     node = node.right;
+                 }
+                 return node;
+             }
+             isBalanced() {
+                 return this.checkBalance(this.root) !== -1;
+             }
+             checkBalance(node) {
+                 if (!node) return 0;
+                 const leftHeight = this.checkBalance(node.left);
+                 if (leftHeight === -1) return -1;
+                 const rightHeight = this.checkBalance(node.right);
+                 if (rightHeight === -1) return -1;
+                 if (Math.abs(leftHeight - rightHeight) > 1) return -1;
+                 return Math.max(leftHeight, rightHeight) + 1;
+             }
+             clear() {
+                 this.root = null;
+             }
+         }
+
+         let binaryTree = new BinarySearchTree();
+
+         function renderTree() {
+             const container = document.getElementById("canvasInner");
+             container.innerHTML = "";
+             if (!binaryTree.root) {
+                 const treeContainer = document.getElementById('tree-container');
+                 treeContainer.querySelector('.canvas-inner').innerHTML = '<div style="color: #bbb; font-size: 18px; padding: 20px;">Empty Tree</div>';
+                 updateStats();
+                 return;
+             }
+             const positions = calculatePositions(binaryTree.root);
+             // compute width and center offset
+             const nodeSpacing = 140; // horizontal spacing between inorder nodes
+             const nodeSize = 60;
+             const totalNodes = positions.size;
+             const contentWidth = Math.max(totalNodes * nodeSpacing, 600);
+             container.style.width = contentWidth + 'px';
+
+             // center inside outer container
+             const outer = document.getElementById('tree-container');
+             // scroll so that tree is centered
+             setTimeout(() => {
+                 outer.scrollLeft = Math.max(0, (container.offsetWidth - outer.clientWidth) / 2);
+             }, 0);
+
+             drawTree(container, binaryTree.root, positions);
+             updateStats();
+         }
+
+         // Assign positions using inorder index to guarantee left-to-right ordering
+         function calculatePositions(root) {
+             const positions = new Map();
+             const levelHeight = 120;
+             const nodeSpacing = 140;
+             let index = 0;
+
+             function inorderAssign(node, depth) {
+                 if (!node) return;
+                 inorderAssign(node.left, depth + 1);
+                 positions.set(node, { x: index * nodeSpacing, y: depth * levelHeight });
+                 index++;
+                 inorderAssign(node.right, depth + 1);
+             }
+             inorderAssign(root, 0);
+             return positions;
+         }
+
+         function drawTree(container, root, positions) {
+             // copy positions and compute offset to center the tree inside container
+             const keys = Array.from(positions.keys());
+             const xs = Array.from(positions.values()).map(p => p.x);
+             const minX = Math.min(...xs);
+             const maxX = Math.max(...xs);
+             const padding = 80;
+             const treeWidth = maxX - minX + padding * 2 + 60; // include node size
+             // shift so leftmost x becomes padding
+             const offsetX = padding - minX + 30; // additional centering
+
+             // create edges first so they appear under nodes
+             drawEdges(container, root, positions, offsetX);
+             drawNodes(container, root, positions, offsetX);
+         }
+
+         function drawEdges(container, node, positions, offsetX) {
+             if (!node) return;
+             const nodeSize = 60;
+             const pos = positions.get(node);
+             const fromX = pos.x + offsetX;
+             const fromY = pos.y + nodeSize / 2;
+
+             if (node.left) {
+                 const leftPos = positions.get(node.left);
+                 const toX = leftPos.x + offsetX;
+                 const toY = leftPos.y + nodeSize / 2;
+                 createEdge(container, { x: fromX, y: fromY }, { x: toX, y: toY });
+                 drawEdges(container, node.left, positions, offsetX);
+             }
+             if (node.right) {
+                 const rightPos = positions.get(node.right);
+                 const toX = rightPos.x + offsetX;
+                 const toY = rightPos.y + nodeSize / 2;
+                 createEdge(container, { x: fromX, y: fromY }, { x: toX, y: toY });
+                 drawEdges(container, node.right, positions, offsetX);
+             }
+         }
+
+         function createEdge(container, from, to) {
+             const edge = document.createElement('div');
+             edge.className = 'tree-edge';
+             const dx = to.x - from.x;
+             const dy = to.y - from.y;
+             const length = Math.sqrt(dx * dx + dy * dy);
+             const angle = Math.atan2(dy, dx);
+             edge.style.width = length + 'px';
+             edge.style.left = from.x + 'px';
+             edge.style.top = from.y + 'px';
+             edge.style.transform = `rotate(${angle}rad)`; // use radians to avoid rounding issues
+             container.appendChild(edge);
+         }
+
+         function drawNodes(container, node, positions, offsetX) {
+             if (!node) return;
+             const nodeSize = 60;
+             const pos = positions.get(node);
+             const nodeDiv = document.createElement('div');
+             nodeDiv.className = 'tree-node';
+             nodeDiv.textContent = node.data;
+             nodeDiv.style.left = (pos.x + offsetX) + 'px';
+             nodeDiv.style.top = (pos.y + nodeSize / 2) + 'px';
+             if (node === binaryTree.root) {
+                 const rootLabel = document.createElement('div');
+                 rootLabel.className = 'root-label';
+                 rootLabel.textContent = 'ROOT';
+                 nodeDiv.appendChild(rootLabel);
+             }
+             container.appendChild(nodeDiv);
+             drawNodes(container, node.left, positions, offsetX);
+             drawNodes(container, node.right, positions, offsetX);
+         }
+
+         function updateStats() {
+             const root = binaryTree.root ? binaryTree.root.data : '-';
+             const size = binaryTree.getSize();
+             const height = binaryTree.getHeight();
+             const isEmpty = size === 0;
+             const minNode = binaryTree.findMin();
+             const maxNode = binaryTree.findMax();
+             const minVal = minNode ? minNode.data : '-';
+             const maxVal = maxNode ? maxNode.data : '-';
+             const balanced = size === 0 ? '-' : (binaryTree.isBalanced() ? 'Yes' : 'No');
+             document.getElementById('root').innerText = root;
+             document.getElementById('size').innerText = size;
+             document.getElementById('height').innerText = height;
+             document.getElementById('isEmpty').innerText = isEmpty ? 'Yes' : 'No';
+             document.getElementById('minVal').innerText = minVal;
+             document.getElementById('maxVal').innerText = maxVal;
+             document.getElementById('balanced').innerText = balanced;
+         }
+
+         function getInputValue() {
+             const input = document.getElementById('tree-input');
+             const value = parseInt(input.value);
+             if (isNaN(value)) {
+                 alert('Please enter a valid number');
+                 return null;
+             }
+             input.value = '';
+             return value;
+         }
+
+         function showTraversalResult(title, result) {
+             alert(`${title}: ${result.join(' → ')}`);
+         }
+
+         function insertNode() {
+             const value = getInputValue();
+             if (value !== null) {
+                 if (binaryTree.search(value)) {
+                     alert('Value ' + value + ' already exists in the tree!');
+                     return;
+                 }
+                 binaryTree.insert(value);
+                 renderTree();
+             }
+         }
+
+         function deleteNode() {
+             const value = getInputValue();
+             if (value === null) return;
+             if (!binaryTree.search(value)) {
+                 alert('Value ' + value + ' not found in the tree!');
+                 return;
+             }
+             binaryTree.delete(value);
+             alert('Value ' + value + ' deleted from tree');
+             renderTree();
+         }
+
+         function searchNode() {
+             const value = getInputValue();
+             if (value === null) return;
+             const found = binaryTree.search(value);
+             if (found) {
+                 alert('Value ' + value + ' found in the tree!');
+             } else {
+                 alert('Value ' + value + ' not found in the tree!');
+             }
+         }
+
+         function inOrderTraversal() {
+             if (binaryTree.getSize() === 0) {
+                 alert('Tree is empty!');
+                 return;
+             }
+             const result = binaryTree.inOrder();
+             showTraversalResult('In-Order Traversal (Left → Root → Right)', result);
+         }
+
+         function preOrderTraversal() {
+             if (binaryTree.getSize() === 0) {
+                 alert('Tree is empty!');
+                 return;
+             }
+             const result = binaryTree.preOrder();
+             showTraversalResult('Pre-Order Traversal (Root → Left → Right)', result);
+         }
+
+         function postOrderTraversal() {
+             if (binaryTree.getSize() === 0) {
+                 alert('Tree is empty!');
+                 return;
+             }
+             const result = binaryTree.postOrder();
+             showTraversalResult('Post-Order Traversal (Left → Right → Root)', result);
+         }
+
+         function levelOrderTraversal() {
+             if (binaryTree.getSize() === 0) {
+                 alert('Tree is empty!');
+                 return;
+             }
+             const result = binaryTree.levelOrder();
+             showTraversalResult('Level-Order Traversal (Breadth-First)', result);
+         }
+
+         function findMin() {
+             if (binaryTree.getSize() === 0) {
+                 alert('Tree is empty!');
+                 return;
+             }
+             const minNode = binaryTree.findMin();
+             alert('Minimum value in tree: ' + minNode.data);
+         }
+
+         function findMax() {
+             if (binaryTree.getSize() === 0) {
+                 alert('Tree is empty!');
+                 return;
+             }
+             const maxNode = binaryTree.findMax();
+             alert('Maximum value in tree: ' + maxNode.data);
+         }
+
+         function getTreeHeight() {
+             const height = binaryTree.getHeight();
+             if (height === 0) {
+                 alert('Tree is empty! Height: 0');
+             } else {
+                 alert('Tree height: ' + height);
+             }
+         }
+
+         function clearTree() {
+             if (binaryTree.getSize() === 0) {
+                 alert('Tree is already empty!');
+                 return;
+             }
+             if (confirm('Are you sure you want to clear the entire tree?')) {
+                 binaryTree.clear();
+                 renderTree();
+                 alert('Tree cleared successfully!');
+             }
+         }
+
+         function openHelp() {
+             document.getElementById('helpOverlay').style.display = 'block';
+         }
+
+         function closeHelp() {
+             document.getElementById('helpOverlay').style.display = 'none';
+         }
+
+         window.addEventListener('load', () => {
+             openHelp();
+             renderTree();
          });
-         
-          // Binary Tree Implementation
-          class TreeNode {
-              constructor(data) {
-                  this.data = data;
-                  this.left = null;
-                  this.right = null;
-              }
-          }
-          
-          class BinarySearchTree {
-              constructor() {
-                  this.root = null;
-              }
-          
-              insert(data) {
-                  const newNode = new TreeNode(data);
-                  if (!this.root) {
-                      this.root = newNode;
-                      return;
-                  }
-                  
-                  this.insertNode(this.root, newNode);
-              }
-              
-              insertNode(node, newNode) {
-                  if (newNode.data < node.data) {
-                      if (!node.left) {
-                          node.left = newNode;
-                      } else {
-                          this.insertNode(node.left, newNode);
-                      }
-                  } else if (newNode.data > node.data) {
-                      if (!node.right) {
-                          node.right = newNode;
-                      } else {
-                          this.insertNode(node.right, newNode);
-                      }
-                  }
-              }
-          
-              delete(data) {
-                  this.root = this.deleteNode(this.root, data);
-              }
-              
-              deleteNode(node, data) {
-                  if (!node) return null;
-                  
-                  if (data < node.data) {
-                      node.left = this.deleteNode(node.left, data);
-                  } else if (data > node.data) {
-                      node.right = this.deleteNode(node.right, data);
-                  } else {
-                      if (!node.left && !node.right) {
-                          return null;
-                      }
-                      if (!node.left) {
-                          return node.right;
-                      }
-                      if (!node.right) {
-                          return node.left;
-                      }
-                      
-                      const minRight = this.findMin(node.right);
-                      node.data = minRight.data;
-                      node.right = this.deleteNode(node.right, minRight.data);
-                  }
-                  return node;
-              }
-          
-              search(data) {
-                  return this.searchNode(this.root, data);
-              }
-              
-              searchNode(node, data) {
-                  if (!node) return false;
-                  if (data === node.data) return true;
-                  if (data < node.data) return this.searchNode(node.left, data);
-                  return this.searchNode(node.right, data);
-              }
-          
-              inOrder() {
-                  const result = [];
-                  this.inOrderHelper(this.root, result);
-                  return result;
-              }
-              
-              inOrderHelper(node, result) {
-                  if (node) {
-                      this.inOrderHelper(node.left, result);
-                      result.push(node.data);
-                      this.inOrderHelper(node.right, result);
-                  }
-              }
-          
-              preOrder() {
-                  const result = [];
-                  this.preOrderHelper(this.root, result);
-                  return result;
-              }
-              
-              preOrderHelper(node, result) {
-                  if (node) {
-                      result.push(node.data);
-                      this.preOrderHelper(node.left, result);
-                      this.preOrderHelper(node.right, result);
-                  }
-              }
-          
-              postOrder() {
-                  const result = [];
-                  this.postOrderHelper(this.root, result);
-                  return result;
-              }
-              
-              postOrderHelper(node, result) {
-                  if (node) {
-                      this.postOrderHelper(node.left, result);
-                      this.postOrderHelper(node.right, result);
-                      result.push(node.data);
-                  }
-              }
-          
-              levelOrder() {
-                  if (!this.root) return [];
-                  
-                  const result = [];
-                  const queue = [this.root];
-                  
-                  while (queue.length > 0) {
-                      const node = queue.shift();
-                      result.push(node.data);
-                      
-                      if (node.left) queue.push(node.left);
-                      if (node.right) queue.push(node.right);
-                  }
-                  
-                  return result;
-              }
-          
-              getHeight() {
-                  return this.getNodeHeight(this.root);
-              }
-              
-              getNodeHeight(node) {
-                  if (!node) return 0;
-                  return 1 + Math.max(this.getNodeHeight(node.left), this.getNodeHeight(node.right));
-              }
-          
-              getSize() {
-                  return this.getSizeHelper(this.root);
-              }
-              
-              getSizeHelper(node) {
-                  if (!node) return 0;
-                  return 1 + this.getSizeHelper(node.left) + this.getSizeHelper(node.right);
-              }
-          
-              findMin(node = this.root) {
-                  if (!node) return null;
-                  while (node.left) {
-                      node = node.left;
-                  }
-                  return node;
-              }
-          
-              findMax(node = this.root) {
-                  if (!node) return null;
-                  while (node.right) {
-                      node = node.right;
-                  }
-                  return node;
-              }
-          
-              isBalanced() {
-                  return this.checkBalance(this.root) !== -1;
-              }
-              
-              checkBalance(node) {
-                  if (!node) return 0;
-                  
-                  const leftHeight = this.checkBalance(node.left);
-                  if (leftHeight === -1) return -1;
-                  
-                  const rightHeight = this.checkBalance(node.right);
-                  if (rightHeight === -1) return -1;
-                  
-                  if (Math.abs(leftHeight - rightHeight) > 1) return -1;
-                  
-                  return Math.max(leftHeight, rightHeight) + 1;
-              }
-          
-              clear() {
-                  this.root = null;
-              }
-          }
-          
-          let binaryTree = new BinarySearchTree();
-          
-          function renderTree() {
-              const container = document.getElementById("tree-container");
-              container.innerHTML = "";
-          
-              if (!binaryTree.root) {
-                  container.innerHTML = '<div style="color: #bbb;">Empty Tree</div>';
-                  updateStats();
-                  return;
-              }
-          
-              const positions = calculatePositions(binaryTree.root);
-              drawTree(container, binaryTree.root, positions);
-              updateStats();
-          }
-          
-          function calculatePositions(root) {
-              const positions = new Map();
-              const levels = new Map();
-              
-              function traverse(node, level, order) {
-                  if (!node) return order;
-                  
-                  order = traverse(node.left, level + 1, order);
-                  
-                  if (!levels.has(level)) {
-                      levels.set(level, []);
-                  }
-                  levels.get(level).push(node);
-                  
-                  positions.set(node, { x: order * 80 + 200, y: level * 80 + 50 });
-                  order++;
-                  
-                  return traverse(node.right, level + 1, order);
-              }
-              
-              traverse(root, 0, 0);
-              return positions;
-          }
-          
-          function drawTree(container, root, positions) {
-              // Draw edges first
-              drawEdges(container, root, positions);
-              
-              // Draw nodes
-              drawNodes(container, root, positions);
-          }
-          
-          function drawEdges(container, node, positions) {
-              if (!node) return;
-              
-              const nodePos = positions.get(node);
-              
-              if (node.left) {
-                  const leftPos = positions.get(node.left);
-                  createEdge(container, nodePos, leftPos);
-                  drawEdges(container, node.left, positions);
-              }
-              
-              if (node.right) {
-                  const rightPos = positions.get(node.right);
-                  createEdge(container, nodePos, rightPos);
-                  drawEdges(container, node.right, positions);
-              }
-          }
-          
-          function createEdge(container, from, to) {
-              const edge = document.createElement("div");
-              edge.className = "tree-edge";
-              
-              const dx = to.x - from.x + 25;
-              const dy = to.y - from.y + 25;
-              const length = Math.sqrt(dx * dx + dy * dy);
-              const angle = Math.atan2(dy, dx) * 180 / Math.PI;
-              
-              edge.style.width = length + "px";
-              edge.style.height = "2px";
-              edge.style.left = from.x + 25 + "px";
-              edge.style.top = from.y + 25 + "px";
-              edge.style.transform = `rotate(${angle}deg)`;
-              
-              container.appendChild(edge);
-          }
-          
-          function drawNodes(container, node, positions) {
-              if (!node) return;
-              
-              const nodeDiv = document.createElement("div");
-              nodeDiv.className = "tree-node";
-              nodeDiv.textContent = node.data;
-              
-              const pos = positions.get(node);
-              nodeDiv.style.left = pos.x + "px";
-              nodeDiv.style.top = pos.y + "px";
-              
-              if (node === binaryTree.root) {
-                  const rootLabel = document.createElement("div");
-                  rootLabel.className = "root-label";
-                  rootLabel.textContent = "ROOT";
-                  nodeDiv.appendChild(rootLabel);
-              }
-              
-              container.appendChild(nodeDiv);
-              
-              drawNodes(container, node.left, positions);
-              drawNodes(container, node.right, positions);
-          }
-          
-          function updateStats() {
-              const root = binaryTree.root ? binaryTree.root.data : "-";
-              const size = binaryTree.getSize();
-              const height = binaryTree.getHeight();
-              const isEmpty = size === 0;
-              const minNode = binaryTree.findMin();
-              const maxNode = binaryTree.findMax();
-              const minVal = minNode ? minNode.data : "-";
-              const maxVal = maxNode ? maxNode.data : "-";
-              const balanced = size === 0 ? "-" : (binaryTree.isBalanced() ? "Yes" : "No");
-          
-              document.getElementById("root").innerText = root;
-              document.getElementById("size").innerText = size;
-              document.getElementById("height").innerText = height;
-              document.getElementById("isEmpty").innerText = isEmpty ? "Yes" : "No";
-              document.getElementById("minVal").innerText = minVal;
-              document.getElementById("maxVal").innerText = maxVal;
-              document.getElementById("balanced").innerText = balanced;
-          }
-          
-          function getInputValue() {
-              const input = document.getElementById("tree-input");
-              const value = parseInt(input.value);
-              if (isNaN(value)) {
-                  alert("Please enter a valid number");
-                  return null;
-              }
-              input.value = "";
-              return value;
-          }
-          
-          function showTraversalResult(title, result) {
-              const resultDiv = document.getElementById("traversal-result");
-              resultDiv.innerHTML = `<strong>${title}:</strong> ${result.join(" → ")}`;
-              resultDiv.style.display = "block";
-              
-              setTimeout(() => {
-                  resultDiv.style.display = "none";
-              }, 5000);
-          }
-          
-          function insertNode() {
-              const value = getInputValue();
-              if (value !== null) {
-                  if (binaryTree.search(value)) {
-                      alert("Value " + value + " already exists in the tree!");
-                      return;
-                  }
-                  binaryTree.insert(value);
-                  renderTree();
-              }
-          }
-          
-          function deleteNode() {
-              const value = parseInt(prompt("Enter value to delete:"));
-              if (isNaN(value)) {
-                  alert("Please enter a valid number");
-                  return;
-              }
-              
-              if (!binaryTree.search(value)) {
-                  alert("Value " + value + " not found in the tree!");
-                  return;
-              }
-              
-              binaryTree.delete(value);
-              alert("Value " + value + " deleted from tree");
-              renderTree();
-          }
-          
-          function searchNode() {
-              const value = parseInt(prompt("Enter value to search:"));
-              if (isNaN(value)) {
-                  alert("Please enter a valid number");
-                  return;
-              }
-              
-              const found = binaryTree.search(value);
-              if (found) {
-                  alert("Value " + value + " found in the tree!");
-              } else {
-                  alert("Value " + value + " not found in the tree!");
-              }
-          }
-          
-          function inOrderTraversal() {
-              if (binaryTree.getSize() === 0) {
-                  alert("Tree is empty!");
-                  return;
-              }
-              const result = binaryTree.inOrder();
-              showTraversalResult("In-Order Traversal (Left → Root → Right)", result);
-          }
-          
-          function preOrderTraversal() {
-              if (binaryTree.getSize() === 0) {
-                  alert("Tree is empty!");
-                  return;
-              }
-              const result = binaryTree.preOrder();
-              showTraversalResult("Pre-Order Traversal (Root → Left → Right)", result);
-          }
-          
-          function postOrderTraversal() {
-              if (binaryTree.getSize() === 0) {
-                  alert("Tree is empty!");
-                  return;
-              }
-              const result = binaryTree.postOrder();
-              showTraversalResult("Post-Order Traversal (Left → Right → Root)", result);
-          }
-          
-          function levelOrderTraversal() {
-              if (binaryTree.getSize() === 0) {
-                  alert("Tree is empty!");
-                  return;
-              }
-              const result = binaryTree.levelOrder();
-              showTraversalResult("Level-Order Traversal (Breadth-First)", result);
-          }
-          
-          function findMin() {
-              if (binaryTree.getSize() === 0) {
-                  alert("Tree is empty!");
-                  return;
-              }
-              const minNode = binaryTree.findMin();
-              alert("Minimum value in tree: " + minNode.data);
-          }
-          
-          function findMax() {
-              if (binaryTree.getSize() === 0) {
-                  alert("Tree is empty!");
-                  return;
-              }
-              const maxNode = binaryTree.findMax();
-              alert("Maximum value in tree: " + maxNode.data);
-          }
-          
-          function getTreeHeight() {
-              const height = binaryTree.getHeight();
-              if (height === 0) {
-                  alert("Tree is empty! Height: 0");
-              } else {
-                  alert("Tree height: " + height);
-              }
-          }
-          
-          function clearTree() {
-              if (binaryTree.getSize() === 0) {
-                  alert("Tree is already empty!");
-                  return;
-              }
-              
-              if (confirm("Are you sure you want to clear the entire tree?")) {
-                  binaryTree.clear();
-                  renderTree();
-                  alert("Tree cleared successfully!");
-              }
-          }
-          
-          function openHelp() {
-              document.getElementById("helpOverlay").style.display = "block";
-          }
-          
-          function closeHelp() {
-              document.getElementById("helpOverlay").style.display = "none";
-          }
-          
-          window.addEventListener("load", () => {
-              openHelp();
-              renderTree();
-          });
-          
-          window.addEventListener("click", function (e) {
-              const overlay = document.getElementById("helpOverlay");
-              if (e.target === overlay) {
-                  closeHelp();
-              }
-          });
+
+         window.addEventListener('click', function (e) {
+             const overlay = document.getElementById('helpOverlay');
+             if (e.target === overlay) {
+                 closeHelp();
+             }
+         });
+
+         window.addEventListener('resize', () => {
+             if (binaryTree.root) {
+                 renderTree();
+             }
+         });
       </script>
    </body>
 </html>
