@@ -4,7 +4,7 @@
       <meta charset="UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-      <title>Binary Tree Visualizer | Interactive Tool (Fixed)</title>
+      <title>Binary Tree Visualizer | Interactive Tool (Enhanced)</title>
       <meta name="description"
          content="A simple and interactive binary tree visualizer to help you understand how binary trees work in programming and data structures." />
       <meta name="keywords"
@@ -192,6 +192,7 @@
          cursor: pointer;
          border: 2px solid #ffffff33;
          transform: translate(-50%, -50%); /* center by position */
+         z-index: 10;
          }
          .tree-node:hover {
          transform: translate(-50%, -50%) scale(1.15);
@@ -199,11 +200,31 @@
          }
          .tree-edge {
          position: absolute;
-         background: linear-gradient(to right, #00BFFF, #ffffff);
-         transform-origin: 0 0; /* top-left */
-         z-index: -1;
-         height: 3px;
+         height: 4px;
+         border-radius: 2px;
+         transform-origin: 0 50%;
+         z-index: 1;
+         transition: all 0.3s ease;
+         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
          }
+         
+         /* Dynamic colored edges based on connection type */
+         .tree-edge.left-child {
+         background: linear-gradient(90deg, #ff6b6b, #ff8e53);
+         box-shadow: 0 2px 8px rgba(255, 107, 107, 0.4);
+         }
+         
+         .tree-edge.right-child {
+         background: linear-gradient(90deg, #4ecdc4, #44a08d);
+         box-shadow: 0 2px 8px rgba(78, 205, 196, 0.4);
+         }
+         
+         /* Hover effect for edges */
+         .tree-edge:hover {
+         height: 6px;
+         transform-origin: 0 50%;
+         }
+         
          .root-label {
          position: absolute;
          top: -28px;
@@ -341,6 +362,42 @@
          from { opacity: 0; transform: scale(0.9); }
          to { opacity: 1; transform: scale(1); }
          }
+         
+         /* Edge color legend */
+         .edge-legend {
+         position: absolute;
+         top: 10px;
+         left: 10px;
+         background: rgba(43, 43, 47, 0.9);
+         padding: 10px;
+         border-radius: 8px;
+         border: 1px solid #00BFFF;
+         color: white;
+         font-size: 12px;
+         z-index: 100;
+         }
+         
+         .legend-item {
+         display: flex;
+         align-items: center;
+         margin-bottom: 5px;
+         }
+         
+         .legend-color {
+         width: 20px;
+         height: 3px;
+         border-radius: 2px;
+         margin-right: 8px;
+         }
+         
+         .legend-color.left {
+         background: linear-gradient(90deg, #ff6b6b, #ff8e53);
+         }
+         
+         .legend-color.right {
+         background: linear-gradient(90deg, #4ecdc4, #44a08d);
+         }
+         
          @media (max-width: 600px) {
          .popup {
          width: 85%;
@@ -359,6 +416,10 @@
          width: 50px;
          height: 50px;
          font-size: 14px;
+         }
+         .edge-legend {
+         font-size: 10px;
+         padding: 8px;
          }
          }
       </style>
@@ -419,6 +480,11 @@
                   <li><b>getMax()</b> - Find the maximum value in the tree.</li>
                   <li><b>clear()</b> - Remove all nodes from the tree.</li>
                </ul>
+               <p><b>Edge Colors:</b></p>
+               <ul>
+                  <li><b>Left children:</b> Red to orange gradient (#ff6b6b to #ff8e53)</li>
+                  <li><b>Right children:</b> Teal to green gradient (#4ecdc4 to #44a08d)</li>
+               </ul>
             </div>
          </div>
          <div class="controls">
@@ -438,6 +504,16 @@
             </div>
          </div>
          <div id="tree-container" class="tree-container">
+            <div class="edge-legend">
+               <div class="legend-item">
+                  <div class="legend-color left"></div>
+                  <span>Left Child</span>
+               </div>
+               <div class="legend-item">
+                  <div class="legend-color right"></div>
+                  <span>Right Child</span>
+               </div>
+            </div>
             <div id="canvasInner" class="canvas-inner"></div>
          </div>
          <div class="list-stats-wrapper">
@@ -735,194 +811,59 @@
                  const leftPos = positions.get(node.left);
                  const toX = leftPos.x + offsetX;
                  const toY = leftPos.y + nodeSize / 2;
-                 createEdge(container, { x: fromX, y: fromY }, { x: toX, y: toY });
+                 createEdge(container, { x: fromX, y: fromY }, { x: toX, y: toY }, 'left-child');
                  drawEdges(container, node.left, positions, offsetX);
              }
              if (node.right) {
                  const rightPos = positions.get(node.right);
                  const toX = rightPos.x + offsetX;
                  const toY = rightPos.y + nodeSize / 2;
-                 createEdge(container, { x: fromX, y: fromY }, { x: toX, y: toY });
+                 createEdge(container, { x: fromX, y: fromY }, { x: toX, y: toY }, 'right-child');
                  drawEdges(container, node.right, positions, offsetX);
              }
          }
 
-         function createEdge(container, from, to) {
-             const edge = document.createElement('div');
-             edge.className = 'tree-edge';
-             const dx = to.x - from.x;
-             const dy = to.y - from.y;
-             const length = Math.sqrt(dx * dx + dy * dy);
-             const angle = Math.atan2(dy, dx);
-             edge.style.width = length + 'px';
-             edge.style.left = from.x + 'px';
-             edge.style.top = from.y + 'px';
-             edge.style.transform = `rotate(${angle}rad)`; // use radians to avoid rounding issues
-             container.appendChild(edge);
-         }
-
          function drawNodes(container, node, positions, offsetX) {
              if (!node) return;
-             const nodeSize = 60;
              const pos = positions.get(node);
              const nodeDiv = document.createElement('div');
              nodeDiv.className = 'tree-node';
-             nodeDiv.textContent = node.data;
              nodeDiv.style.left = (pos.x + offsetX) + 'px';
-             nodeDiv.style.top = (pos.y + nodeSize / 2) + 'px';
+             nodeDiv.style.top = pos.y + 'px';
+             nodeDiv.textContent = node.data;
              if (node === binaryTree.root) {
-                 const rootLabel = document.createElement('div');
-                 rootLabel.className = 'root-label';
-                 rootLabel.textContent = 'ROOT';
-                 nodeDiv.appendChild(rootLabel);
+                 const label = document.createElement('div');
+                 label.className = 'root-label';
+                 label.textContent = 'Root';
+                 nodeDiv.appendChild(label);
              }
              container.appendChild(nodeDiv);
              drawNodes(container, node.left, positions, offsetX);
              drawNodes(container, node.right, positions, offsetX);
          }
 
+         function createEdge(container, from, to, className) {
+             const edge = document.createElement('div');
+             edge.className = `tree-edge ${className}`;
+             const dx = to.x - from.x;
+             const dy = to.y - from.y;
+             const length = Math.sqrt(dx * dx + dy * dy);
+             const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+             edge.style.width = length + 'px';
+             edge.style.left = from.x + 'px';
+             edge.style.top = from.y + 'px';
+             edge.style.transform = `rotate(${angle}deg)`;
+             container.appendChild(edge);
+         }
+
          function updateStats() {
-             const root = binaryTree.root ? binaryTree.root.data : '-';
-             const size = binaryTree.getSize();
-             const height = binaryTree.getHeight();
-             const isEmpty = size === 0;
-             const minNode = binaryTree.findMin();
-             const maxNode = binaryTree.findMax();
-             const minVal = minNode ? minNode.data : '-';
-             const maxVal = maxNode ? maxNode.data : '-';
-             const balanced = size === 0 ? '-' : (binaryTree.isBalanced() ? 'Yes' : 'No');
-             document.getElementById('root').innerText = root;
-             document.getElementById('size').innerText = size;
-             document.getElementById('height').innerText = height;
-             document.getElementById('isEmpty').innerText = isEmpty ? 'Yes' : 'No';
-             document.getElementById('minVal').innerText = minVal;
-             document.getElementById('maxVal').innerText = maxVal;
-             document.getElementById('balanced').innerText = balanced;
-         }
-
-         function getInputValue() {
-             const input = document.getElementById('tree-input');
-             const value = parseInt(input.value);
-             if (isNaN(value)) {
-                 alert('Please enter a valid number');
-                 return null;
-             }
-             input.value = '';
-             return value;
-         }
-
-         function showTraversalResult(title, result) {
-             alert(`${title}: ${result.join(' → ')}`);
-         }
-
-         function insertNode() {
-             const value = getInputValue();
-             if (value !== null) {
-                 if (binaryTree.search(value)) {
-                     alert('Value ' + value + ' already exists in the tree!');
-                     return;
-                 }
-                 binaryTree.insert(value);
-                 renderTree();
-             }
-         }
-
-         function deleteNode() {
-             const value = getInputValue();
-             if (value === null) return;
-             if (!binaryTree.search(value)) {
-                 alert('Value ' + value + ' not found in the tree!');
-                 return;
-             }
-             binaryTree.delete(value);
-             alert('Value ' + value + ' deleted from tree');
-             renderTree();
-         }
-
-         function searchNode() {
-             const value = getInputValue();
-             if (value === null) return;
-             const found = binaryTree.search(value);
-             if (found) {
-                 alert('Value ' + value + ' found in the tree!');
-             } else {
-                 alert('Value ' + value + ' not found in the tree!');
-             }
-         }
-
-         function inOrderTraversal() {
-             if (binaryTree.getSize() === 0) {
-                 alert('Tree is empty!');
-                 return;
-             }
-             const result = binaryTree.inOrder();
-             showTraversalResult('In-Order Traversal (Left → Root → Right)', result);
-         }
-
-         function preOrderTraversal() {
-             if (binaryTree.getSize() === 0) {
-                 alert('Tree is empty!');
-                 return;
-             }
-             const result = binaryTree.preOrder();
-             showTraversalResult('Pre-Order Traversal (Root → Left → Right)', result);
-         }
-
-         function postOrderTraversal() {
-             if (binaryTree.getSize() === 0) {
-                 alert('Tree is empty!');
-                 return;
-             }
-             const result = binaryTree.postOrder();
-             showTraversalResult('Post-Order Traversal (Left → Right → Root)', result);
-         }
-
-         function levelOrderTraversal() {
-             if (binaryTree.getSize() === 0) {
-                 alert('Tree is empty!');
-                 return;
-             }
-             const result = binaryTree.levelOrder();
-             showTraversalResult('Level-Order Traversal (Breadth-First)', result);
-         }
-
-         function findMin() {
-             if (binaryTree.getSize() === 0) {
-                 alert('Tree is empty!');
-                 return;
-             }
-             const minNode = binaryTree.findMin();
-             alert('Minimum value in tree: ' + minNode.data);
-         }
-
-         function findMax() {
-             if (binaryTree.getSize() === 0) {
-                 alert('Tree is empty!');
-                 return;
-             }
-             const maxNode = binaryTree.findMax();
-             alert('Maximum value in tree: ' + maxNode.data);
-         }
-
-         function getTreeHeight() {
-             const height = binaryTree.getHeight();
-             if (height === 0) {
-                 alert('Tree is empty! Height: 0');
-             } else {
-                 alert('Tree height: ' + height);
-             }
-         }
-
-         function clearTree() {
-             if (binaryTree.getSize() === 0) {
-                 alert('Tree is already empty!');
-                 return;
-             }
-             if (confirm('Are you sure you want to clear the entire tree?')) {
-                 binaryTree.clear();
-                 renderTree();
-                 alert('Tree cleared successfully!');
-             }
+             document.getElementById('root').textContent = binaryTree.root ? binaryTree.root.data : '-';
+             document.getElementById('size').textContent = binaryTree.getSize();
+             document.getElementById('height').textContent = binaryTree.getHeight();
+             document.getElementById('isEmpty').textContent = binaryTree.root ? 'No' : 'Yes';
+             document.getElementById('minVal').textContent = binaryTree.findMin()?.data ?? '-';
+             document.getElementById('maxVal').textContent = binaryTree.findMax()?.data ?? '-';
+             document.getElementById('balanced').textContent = binaryTree.root ? (binaryTree.isBalanced() ? 'Yes' : 'No') : '-';
          }
 
          function openHelp() {
@@ -933,23 +874,81 @@
              document.getElementById('helpOverlay').style.display = 'none';
          }
 
-         window.addEventListener('load', () => {
-             openHelp();
-             renderTree();
-         });
-
-         window.addEventListener('click', function (e) {
-             const overlay = document.getElementById('helpOverlay');
-             if (e.target === overlay) {
-                 closeHelp();
-             }
-         });
-
-         window.addEventListener('resize', () => {
-             if (binaryTree.root) {
+         function insertNode() {
+             const input = document.getElementById('tree-input');
+             const value = parseInt(input.value);
+             if (!isNaN(value)) {
+                 binaryTree.insert(value);
                  renderTree();
+                 input.value = '';
+             } else {
+                 alert('Please enter a valid number');
              }
-         });
+         }
+
+         function deleteNode() {
+             const input = document.getElementById('tree-input');
+             const value = parseInt(input.value);
+             if (!isNaN(value)) {
+                 binaryTree.delete(value);
+                 renderTree();
+                 input.value = '';
+             } else {
+                 alert('Please enter a valid number');
+             }
+         }
+
+         function searchNode() {
+             const input = document.getElementById('tree-input');
+             const value = parseInt(input.value);
+             if (!isNaN(value)) {
+                 const found = binaryTree.search(value);
+                 alert(found ? `Value ${value} found in the tree` : `Value ${value} not found`);
+                 input.value = '';
+             } else {
+                 alert('Please enter a valid number');
+             }
+         }
+
+         function inOrderTraversal() {
+             const result = binaryTree.inOrder();
+             alert('In-Order Traversal: ' + (result.length ? result.join(', ') : 'Empty'));
+         }
+
+         function preOrderTraversal() {
+             const result = binaryTree.preOrder();
+             alert('Pre-Order Traversal: ' + (result.length ? result.join(', ') : 'Empty'));
+         }
+
+         function postOrderTraversal() {
+             const result = binaryTree.postOrder();
+             alert('Post-Order Traversal: ' + (result.length ? result.join(', ') : 'Empty'));
+         }
+
+         function levelOrderTraversal() {
+             const result = binaryTree.levelOrder();
+             alert('Level-Order Traversal: ' + (result.length ? result.join(', ') : 'Empty'));
+         }
+
+         function findMin() {
+             const min = binaryTree.findMin();
+             alert(min ? `Minimum value: ${min.data}` : 'Tree is empty');
+         }
+
+         function findMax() {
+             const max = binaryTree.findMax();
+             alert(max ? `Maximum value: ${max.data}` : 'Tree is empty');
+         }
+
+         function getTreeHeight() {
+             const height = binaryTree.getHeight();
+             alert(`Tree height: ${height}`);
+         }
+
+         function clearTree() {
+             binaryTree.clear();
+             renderTree();
+         }
       </script>
    </body>
 </html>
