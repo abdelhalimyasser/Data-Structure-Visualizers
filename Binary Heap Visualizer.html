@@ -10,14 +10,6 @@
       <meta name="keywords"
          content="binary heap visualizer, data structures, programming, algorithms, JavaScript, coding tools, heap visualization, priority queue" />
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
-      <link rel="icon" href="https://pngup.com/0d0U/abdelhalim-yasser%20logo.png" sizes="512x512" type="image/png">
-      <link rel="apple-touch-icon" href="https://pngup.com/0d0U/abdelhalim-yasser%20logo.png" sizes="180x180"
-         type="image/png">
-      <link rel="manifest" href="manifest.json">
-      <meta name="theme-color" content="#2b2b2f">
-      <meta name="mobile-web-app-capable" content="yes">
-      <meta name="apple-mobile-web-app-capable" content="yes">
-      <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
       <style>
          *,
          html {
@@ -316,10 +308,18 @@
          }
          .learn-more h2 {
          color: #FDEE00;
+         margin-bottom: 15px;
          }
-         .learn-more p {
-         color: #bbb;
-         margin: 10px 0;
+         .learn-more .controls {
+         display: flex;
+         flex-direction: column;
+         gap: 10px;
+         width: 100%;
+         }
+         .learn-more button {
+         width: 100%;
+         padding: 10px;
+         font-size: 15px;
          }
          .overlay {
          display: none;
@@ -328,41 +328,38 @@
          left: 0;
          width: 100%;
          height: 100%;
-         background: rgba(0, 0, 0, 0.7);
-         z-index: 2000;
+         background: rgba(0, 0, 0, 0.6);
+         z-index: 999;
          overflow: auto;
          }
          .popup {
          background: linear-gradient(315deg, #FDEE00 0%, #ff7518 74%);
-         padding: 25px;
-         border-radius: 12px;
+         padding: 20px;
+         border-radius: 10px;
          max-width: 90%;
-         width: 650px;
+         width: 500px;
          margin: 80px auto;
          position: relative;
-         box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
-         color: #000;
+         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+         color: white;
          font-size: 16px;
          text-align: left;
-         line-height: 1.6;
+         line-height: 1.5;
          animation: fadeIn 0.4s ease;
          max-height: 80vh;
          overflow-y: auto;
-         z-index: 2001;
-         word-wrap: break-word;
-         white-space: normal;
          }
          .popup h2 {
-         color: #000;
+         color: #fff;
          margin-bottom: 15px;
          text-align: center;
          }
          .popup p {
-         color: #333;
-         margin-bottom: 10px;
+         color: #ddd;
+         text-align: center;
          }
          .popup ul {
-         color: #333;
+         color: #ddd;
          margin-left: 20px;
          }
          .popup ul li {
@@ -371,10 +368,10 @@
          .close {
          position: absolute;
          right: 15px;
-         top: 15px;
-         font-size: 28px;
+         top: 10px;
+         font-size: 25px;
          cursor: pointer;
-         color: #000;
+         color: #fff;
          }
          ::-webkit-scrollbar {
          width: 8px;
@@ -437,7 +434,7 @@
          }
          @media (max-width: 600px) {
          .popup {
-         width: 85%;
+         width: 80%;
          font-size: 14px;
          margin: 40px auto;
          padding: 20px;
@@ -473,10 +470,10 @@
                   <a href="#" class="nav-link" onclick="openHelp()">How to work</a>
                </li>
                <li>
-                  <a href="https://github.com" class="nav-link" target="_blank">Github</a>
+                  <a href="https://github.com/abdelhalimyasser" class="nav-link" target="_blank">Github</a>
                </li>
                <li>
-                  <a href="https://linkedin.com" class="nav-link" target="_blank">LinkedIn</a>
+                  <a href="https://www.linkedin.com/in/abdelhalimyasser" class="nav-link" target="_blank">LinkedIn</a>
                </li>
             </ul>
          </nav>
@@ -563,7 +560,6 @@
             </div>
             <div class="learn-more" id="learn-more">
                <h2>Learn More Data Structures</h2>
-               <p style="color: #bbb;">Explore other data structure visualizations to enhance your understanding.</p>
                <div class="controls">
                   <button onclick="openVisualizer('stack')">Stack</button>
                   <button onclick="openVisualizer('queue')">Queue</button>
@@ -606,68 +602,68 @@
                  menuOpen = false;
              });
          });
-         
+
          // Binary Heap Implementation
          class BinaryHeap {
              constructor(isMaxHeap = true) {
                  this.heap = [];
                  this.isMaxHeap = isMaxHeap;
              }
-         
+
              getParentIndex(index) {
                  return Math.floor((index - 1) / 2);
              }
-         
+
              getLeftChildIndex(index) {
                  return 2 * index + 1;
              }
-         
+
              getRightChildIndex(index) {
                  return 2 * index + 2;
              }
-         
+
              hasParent(index) {
                  return this.getParentIndex(index) >= 0;
              }
-         
+
              hasLeftChild(index) {
                  return this.getLeftChildIndex(index) < this.heap.length;
              }
-         
+
              hasRightChild(index) {
                  return this.getRightChildIndex(index) < this.heap.length;
              }
-         
+
              parent(index) {
                  return this.heap[this.getParentIndex(index)];
              }
-         
+
              leftChild(index) {
                  return this.heap[this.getLeftChildIndex(index)];
              }
-         
+
              rightChild(index) {
                  return this.heap[this.getRightChildIndex(index)];
              }
-         
+
              swap(index1, index2) {
                  [this.heap[index1], this.heap[index2]] = [this.heap[index2], this.heap[index1]];
              }
-         
+
              compare(a, b) {
                  return this.isMaxHeap ? a > b : a < b;
              }
-         
+
              peek() {
                  if (this.heap.length === 0) return null;
                  return this.heap[0];
              }
-         
+
              insert(value) {
                  this.heap.push(value);
                  this.heapifyUp();
              }
-         
+
              extractRoot() {
                  if (this.heap.length === 0) return null;
                  if (this.heap.length === 1) return this.heap.pop();
@@ -677,7 +673,7 @@
                  this.heapifyDown();
                  return root;
              }
-         
+
              heapifyUp() {
                  let index = this.heap.length - 1;
                  while (this.hasParent(index) && this.compare(this.heap[index], this.parent(index))) {
@@ -685,7 +681,7 @@
                      index = this.getParentIndex(index);
                  }
              }
-         
+
              heapifyDown() {
                  let index = 0;
                  while (this.hasLeftChild(index)) {
@@ -705,14 +701,14 @@
                      index = targetChildIndex;
                  }
              }
-         
+
              buildHeap(array) {
                  this.heap = [...array];
                  for (let i = Math.floor(this.heap.length / 2) - 1; i >= 0; i--) {
                      this.heapifyDownFromIndex(i);
                  }
              }
-         
+
              heapifyDownFromIndex(index) {
                  while (this.hasLeftChild(index)) {
                      let targetChildIndex = this.getLeftChildIndex(index);
@@ -731,37 +727,37 @@
                      index = targetChildIndex;
                  }
              }
-         
+
              size() {
                  return this.heap.length;
              }
-         
+
              isEmpty() {
                  return this.heap.length === 0;
              }
-         
+
              clear() {
                  this.heap = [];
              }
-         
+
              getHeight() {
                  if (this.heap.length === 0) return 0;
                  return Math.floor(Math.log2(this.heap.length)) + 1;
              }
-         
+
              isComplete() {
                  return true; // Heap is always complete by definition
              }
-         
+
              getLastElement() {
                  if (this.heap.length === 0) return null;
                  return this.heap[this.heap.length - 1];
              }
          }
-         
+
          let binaryHeap = new BinaryHeap(true); // Start with max heap
          let isProcessing = false; // Flag to prevent multiple simultaneous operations
-         
+
          function toggleHeapType(type) {
              if (isProcessing) return;
              const maxBtn = document.getElementById('maxHeapBtn');
@@ -785,7 +781,7 @@
              }
              renderHeap();
          }
-         
+
          function renderHeap() {
              const container = document.getElementById("canvasInner");
              container.innerHTML = "";
@@ -800,16 +796,16 @@
              const totalNodes = binaryHeap.size();
              const contentWidth = Math.max(totalNodes * nodeSpacing, 600);
              container.style.width = contentWidth + 'px';
-         
+
              const outer = document.getElementById('tree-container');
              setTimeout(() => {
                  outer.scrollLeft = Math.max(0, (container.offsetWidth - outer.clientWidth) / 2);
              }, 0);
-         
+
              drawHeap(container, positions);
              updateStats();
          }
-         
+
          function calculatePositions() {
              const positions = [];
              const levelHeight = 120;
@@ -825,14 +821,14 @@
                  
                  positions.push({
                      x: startX + positionInLevel * nodeSpacing,
-                     y: level * levelHeight + 50, // Add offset for better spacing
+                     y: level * levelHeight + 50,
                      index: i
                  });
              }
              
              return positions;
          }
-         
+
          function drawHeap(container, positions) {
              const keys = positions;
              const xs = positions.map(p => p.x);
@@ -840,11 +836,11 @@
              const maxX = Math.max(...xs);
              const padding = 80;
              const offsetX = padding - minX + 30;
-         
+
              drawEdges(container, positions, offsetX);
              drawNodes(container, positions, offsetX);
          }
-         
+
          function drawEdges(container, positions, offsetX) {
              const nodeSize = 60;
              
@@ -871,7 +867,7 @@
                  }
              }
          }
-         
+
          function drawNodes(container, positions, offsetX) {
              for (let i = 0; i < positions.length; i++) {
                  const pos = positions[i];
@@ -892,7 +888,7 @@
                  container.appendChild(nodeDiv);
              }
          }
-         
+
          function createEdge(container, from, to, className) {
              const edge = document.createElement('div');
              edge.className = `tree-edge ${className}`;
@@ -906,7 +902,7 @@
              edge.style.transform = `rotate(${angle}deg)`;
              container.appendChild(edge);
          }
-         
+
          function updateStats() {
              document.getElementById('heapType').textContent = binaryHeap.isMaxHeap ? 'Max Heap' : 'Min Heap';
              document.getElementById('root').textContent = binaryHeap.peek() ?? '-';
@@ -916,22 +912,31 @@
              document.getElementById('lastElement').textContent = binaryHeap.getLastElement() ?? '-';
              document.getElementById('isComplete').textContent = binaryHeap.isComplete() ? 'Yes' : 'No';
          }
-         
+
          function openHelp() {
              document.getElementById('helpOverlay').style.display = 'block';
          }
-         
+
          function closeHelp() {
              document.getElementById('helpOverlay').style.display = 'none';
          }
-         
-         function toggleButtons(disabled) {
-             const buttons = ['insertBtn', 'extractBtn', 'peekBtn', 'buildBtn', 'sizeBtn', 'clearBtn'];
-             buttons.forEach(id => {
-                 document.getElementById(id).disabled = disabled;
-             });
+
+         function openVisualizer(type) {
+             const visualizerUrls = {
+                 stack: "https://abdelhalimyasser.github.io/Data-Structure-Visualizers/Stack%20Visualizer.html",
+                 queue: "https://abdelhalimyasser.github.io/Data-Structure-Visualizers/Queue%20Visualizer.html",
+                 binaryTree: "https://abdelhalimyasser.github.io/Data-Structure-Visualizers/Binary%20Tree%20Visualizer.html",
+                 linkedList: "https://abdelhalimyasser.github.io/Data-Structure-Visualizers/Linked%20List%20Visualizer.html"
+             };
+             
+             const url = visualizerUrls[type];
+             if (url) {
+                 window.open(url, '_blank');
+             } else {
+                 alert(`${type.charAt(0).toUpperCase() + type.slice(1)} visualizer is not available yet!`);
+             }
          }
-         
+
          async function insertElement() {
              if (isProcessing) return;
              isProcessing = true;
@@ -948,7 +953,7 @@
              isProcessing = false;
              toggleButtons(false);
          }
-         
+
          async function extractRoot() {
              if (isProcessing) return;
              isProcessing = true;
@@ -963,7 +968,7 @@
              isProcessing = false;
              toggleButtons(false);
          }
-         
+
          async function peekRoot() {
              if (isProcessing) return;
              const root = binaryHeap.peek();
@@ -973,7 +978,7 @@
                  alert('Heap is empty');
              }
          }
-         
+
          async function buildFromArray() {
              if (isProcessing) return;
              isProcessing = true;
@@ -995,12 +1000,12 @@
              isProcessing = false;
              toggleButtons(false);
          }
-         
+
          function getHeapSize() {
              if (isProcessing) return;
              alert(`Heap size: ${binaryHeap.size()}`);
          }
-         
+
          async function clearHeap() {
              if (isProcessing) return;
              isProcessing = true;
@@ -1010,7 +1015,7 @@
              isProcessing = false;
              toggleButtons(false);
          }
-         
+
          async function animateInsert() {
              const container = document.getElementById("canvasInner");
              const lastNode = container.querySelector('.tree-node:last-child');
@@ -1021,7 +1026,7 @@
              }
              renderHeap();
          }
-         
+
          async function animateExtract() {
              const container = document.getElementById("canvasInner");
              const rootNode = container.querySelector('.tree-node.root');
@@ -1032,23 +1037,28 @@
              }
              renderHeap();
          }
-         
-         function openVisualizer(type) {
-         const visualizerUrls = {
-         stack: "https://abdelhalimyasser.github.io/Data-Structure-Visualizers/Stack%20Visualizer.html",
-         queue: "https://abdelhalimyasser.github.io/Data-Structure-Visualizers/Queue%20Visualizer.html",
-         binaryTree: "https://abdelhalimyasser.github.io/Data-Structure-Visualizers/Binary%20Tree%20Visualizer.html",
-         linkedList: "https://abdelhalimyasser.github.io/Data-Structure-Visualizers/Linked%20List%20Visualizer.html"
+
+         function toggleButtons(disabled) {
+             const buttons = ['insertBtn', 'extractBtn', 'peekBtn', 'buildBtn', 'sizeBtn', 'clearBtn'];
+             buttons.forEach(id => {
+                 document.getElementById(id).disabled = disabled;
+             });
+         }
+
+         // Show popup on page load
+         window.onload = function() {
+             openHelp();
          };
-         
-         const url = visualizerUrls[type];
-         if (url) {
-         window.open(url, '_blank');
-         } else {
-         alert(`${type.charAt(0).toUpperCase() + type.slice(1)} visualizer is not available yet!`);
-         }
-         }
-         
+
+         // Close popup when clicking outside
+         window.addEventListener("click", function(e) {
+             const overlay = document.getElementById("helpOverlay");
+             const popup = document.querySelector(".popup");
+             if (e.target === overlay) {
+                 closeHelp();
+             }
+         });
+
          // Initialize with empty heap
          renderHeap();
       </script>
