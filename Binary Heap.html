@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+      <title>Binary Heap Visualizer | Interactive Tool</title>
+      <meta name="description"
+         content="A simple and interactive binary heap visualizer to help you understand how binary heaps work in programming and data structures." />
+      <meta name="keywords"
+         content="binary heap visualizer, data structures, programming, algorithms, JavaScript, coding tools, heap visualization, priority queue" />
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+      <style>
+         *,
+         html {
+         margin: 0;
+         padding: 0;
+         box-sizing: border-box;
+         }
+         body {
+         font-family: Arial, sans-serif;
+         text-align: center;
+         background-color: #1A1A1D;
+         margin: 0;
+         padding: 20px;
+         display: flex;
+         flex-direction: column;
+         min-height: 100vh;
+         }
+         main {
+         flex: 1;
+         display: flex;
+         flex-direction: column;
+         align-items: center;
+         justify-content: center;
+         }
+         header {
+         top: 0;
+         z-index: 1000;
+         width: 100%;
+         display: flex;
+         justify-content: space-between;
+         align-items: center;
+         padding: 10px 20px;
+         background-color: #1A1A1D;
+         margin-bottom: 10px;
+         }
+         header h1 {
+         color: #fff;
+         font-size: 24px;
+         margin: 0;
+         }
+         header h1 a {
+         color: #fff;
+         text-decoration: none;
+         }
+         .hamburger {
+         display: none;
+         cursor: pointer;
+         z-index: 1001;
+         }
+         .hamburger i {
+         font-size: 24px;
+         color: #fff;
+         }
+         .nav {
+         display: flex;
+         }
+         .nav.open {
+         display: block;
+         }
+         .nav-list {
+         list-style: none;
+         display: flex;
+         gap: 25px;
+         }
+         .nav-link {
+         text-decoration: none;
+         color: #fff;
+         font-size: 18px;
+         font-weight: 500;
+         transition: color 0.3s;
+         }
+         .nav-link:hover {
+         color: #FDEE00;
+         }
+         @media (max-width: 767px) {
+         .hamburger {
+         display: flex;
+         align-items: center;
+         }
+         .nav {
+         position: fixed;
+         top: 0;
+         right: 0;
+         height: 100vh;
+         width: 70vw;
+         background-color: #1A1A1D;
+         transform: translateX(100%);
+         transition: transform 0.2s ease-in-out;
+         padding-top: 80px;
+         z-index: 999;
+         }
+         .nav.open {
+         transform: translateX(0);
+         }
+         .nav-list {
+         flex-direction: column;
+         gap: 30px;
+         align-items: center;
+         }
+         }
+         h1 {
+         margin-bottom: 10px;
+         color: #fff;
+         }
+         .subtitle {
+         color: #bbb;
+         margin-bottom: 20px;
+         }
+         .controls {
+         margin-bottom: 20px;
+         }
+         .btn-group {
+         margin-top: 10px;
+         }
+         .heap-type-toggle {
+         margin-bottom: 15px;
+         }
+         .heap-type-toggle button {
+         background: #2b2b2f;
+         border: 2px solid #FDEE00;
+         color: #fff;
+         padding: 10px 15px;
+         font-size: 15px;
+         margin: 5px;
+         cursor: pointer;
+         border-radius: 8px;
+         transition: all 0.3s ease;
+         }
+         .heap-type-toggle button.active {
+         background: linear-gradient(315deg, #FDEE00 0%, #ff7518 74%);
+         color: #000;
+         }
+         input[type="number"] {
+         padding: 10px;
+         margin: 5px;
+         font-size: 16px;
+         width: 185px;
+         border: 2px solid #666;
+         border-radius: 8px;
+         background-color: #2a2a2e;
+         color: white;
+         text-align: center;
+         transition: all 0.3s ease;
+         }
+         input[type="number"]:focus {
+         border-color: #FDEE00;
+         outline: none;
+         }
+         button {
+         padding: 10px 15px;
+         font-size: 15px;
+         margin: 5px;
+         cursor: pointer;
+         background: linear-gradient(315deg, #FDEE00 0%, #ff7518 74%);
+         color: #000;
+         border: none;
+         border-radius: 8px;
+         transition: all 0.3s ease;
+         font-weight: bold;
+         }
+         button:hover {
+         background: linear-gradient(315deg, #ff7518 0%, #FDEE00 74%);
+         transform: translateY(-2px);
+         }
+         button:disabled {
+         background: #666;
+         cursor: not-allowed;
+         transform: none;
+         }
+         .tree-container {
+         display: block;
+         align-items: center;
+         justify-content: center;
+         min-height: 500px;
+         width: 90%;
+         max-width: 1400px;
+         margin: 0 auto 20px;
+         border: 2px solid #FDEE00;
+         border-radius: 12px;
+         padding: 40px;
+         background-color: #2b2b2f;
+         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+         overflow: auto;
+         position: relative;
+         }
+         .canvas-inner {
+         position: relative;
+         height: 100%;
+         }
+         .tree-node {
+         position: absolute;
+         width: 60px;
+         height: 60px;
+         display: flex;
+         align-items: center;
+         justify-content: center;
+         background: linear-gradient(315deg, #FDEE00 0%, #ff7518 74%);
+         color: #000;
+         border-radius: 50%;
+         font-weight: bold;
+         font-size: 16px;
+         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+         transition: all 0.3s ease;
+         cursor: pointer;
+         border: 2px solid #ffffff33;
+         transform: translate(-50%, -50%);
+         z-index: 10;
+         }
+         .tree-node:hover {
+         transform: translate(-50%, -50%) scale(1.15);
+         box-shadow: 0 4px 20px rgba(253, 238, 0, 0.6);
+         }
+         .tree-node.root {
+         border: 3px solid #fff;
+         box-shadow: 0 4px 20px rgba(253, 238, 0, 0.8);
+         }
+         .tree-node.inserting {
+         animation: nodeInsert 0.5s ease-in-out;
+         }
+         .tree-node.extracting {
+         animation: nodeExtract 0.5s ease-in-out;
+         }
+         .tree-edge {
+         position: absolute;
+         height: 4px;
+         border-radius: 2px;
+         transform-origin: 0 50%;
+         z-index: 1;
+         transition: all 0.3s ease;
+         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+         }
+         .tree-edge.left-child {
+         background: linear-gradient(90deg, #ff6b6b, #ff8e53);
+         box-shadow: 0 2px 8px rgba(255, 107, 107, 0.4);
+         }
+         .tree-edge.right-child {
+         background: linear-gradient(90deg, #4ecdc4, #44a08d);
+         box-shadow: 0 2px 8px rgba(78, 205, 196, 0.4);
+         }
+         .tree-edge:hover {
+         height: 6px;
+         transform-origin: 0 50%;
+         }
+         .root-label {
+         position: absolute;
+         top: -28px;
+         left: 50%;
+         transform: translateX(-50%);
+         background: linear-gradient(315deg, #FDEE00 0%, #ff7518 74%);
+         color: #000;
+         padding: 4px 8px;
+         border-radius: 12px;
+         font-size: 11px;
+         font-weight: bold;
+         border: 1px solid #ffffff33;
+         }
+         .list-stats-wrapper {
+         display: flex;
+         gap: 20px;
+         justify-content: center;
+         align-items: flex-start;
+         margin-bottom: 20px;
+         flex-wrap: wrap;
+         }
+         @media (max-width: 767px) {
+         .list-stats-wrapper {
+         flex-direction: column;
+         align-items: center;
+         }
+         }
+         .stats {
+         background: #2b2b2f;
+         padding: 15px;
+         width: 250px;
+         margin-left: auto;
+         margin-right: auto;
+         text-align: left;
+         border-radius: 8px;
+         border: 2px solid #FDEE00;
+         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+         color: white;
+         margin-top: 0;
+         flex: 1;
+         }
+         .learn-more {
+         background-color: #2b2b2f;
+         padding: 15px;
+         border-radius: 8px;
+         width: 250px;
+         margin: auto;
+         border: 2px solid #FDEE00;
+         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+         margin-bottom: 60px;
+         margin-top: 0;
+         flex: 1;
+         }
+         .learn-more h2 {
+         color: #FDEE00;
+         }
+         .learn-more p {
+         color: #bbb;
+         margin: 10px 0;
+         }
+         .overlay {
+         display: none;
+         position: fixed;
+         top: 0;
+         left: 0;
+         width: 100%;
+         height: 100%;
+         background: rgba(0, 0, 0, 0.7);
+         z-index: 2000;
+         overflow: auto;
+         }
+         .popup {
+         background: linear-gradient(315deg, #FDEE00 0%, #ff7518 74%);
+         padding: 25px;
+         border-radius: 12px;
+         max-width: 90%;
+         width: 650px;
+         margin: 80px auto;
+         position: relative;
+         box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+         color: #000;
+         font-size: 16px;
+         text-align: left;
+         line-height: 1.6;
+         animation: fadeIn 0.4s ease;
+         max-height: 80vh;
+         overflow-y: auto;
+         z-index: 2001;
+         word-wrap: break-word;
+         white-space: normal;
+         }
+         .popup h2 {
+         color: #000;
+         margin-bottom: 15px;
+         text-align: center;
+         }
+         .popup p {
+         color: #333;
+         margin-bottom: 10px;
+         }
+         .popup ul {
+         color: #333;
+         margin-left: 20px;
+         }
+         .popup ul li {
+         margin-bottom: 8px;
+         }
+         .close {
+         position: absolute;
+         right: 15px;
+         top: 15px;
+         font-size: 28px;
+         cursor: pointer;
+         color: #000;
+         }
+         ::-webkit-scrollbar {
+         width: 8px;
+         }
+         ::-webkit-scrollbar-track {
+         background: #2b2b2f;
+         }
+         ::-webkit-scrollbar-thumb {
+         background: #FDEE00;
+         border-radius: 4px;
+         }
+         * {
+         scrollbar-width: thin;
+         scrollbar-color: #FDEE00 #2b2b2f;
+         }
+         .container {
+         overflow-x: auto;
+         -webkit-overflow-scrolling: touch;
+         }
+         @keyframes fadeIn {
+         from { opacity: 0; transform: scale(0.9); }
+         to { opacity: 1; transform: scale(1); }
+         }
+         @keyframes nodeInsert {
+         0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+         100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+         }
+         @keyframes nodeExtract {
+         0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+         100% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+         }
+         .edge-legend {
+         position: absolute;
+         top: 10px;
+         left: 10px;
+         background: rgba(43, 43, 47, 0.9);
+         padding: 10px;
+         border-radius: 8px;
+         border: 1px solid #FDEE00;
+         color: white;
+         font-size: 12px;
+         z-index: 100;
+         }
+         .legend-item {
+         display: flex;
+         align-items: center;
+         margin-bottom: 5px;
+         }
+         .legend-color {
+         width: 20px;
+         height: 3px;
+         border-radius: 2px;
+         margin-right: 8px;
+         }
+         .legend-color.left {
+         background: linear-gradient(90deg, #ff6b6b, #ff8e53);
+         }
+         .legend-color.right {
+         background: linear-gradient(90deg, #4ecdc4, #44a08d);
+         }
+         @media (max-width: 600px) {
+         .popup {
+         width: 85%;
+         font-size: 14px;
+         margin: 40px auto;
+         padding: 20px;
+         }
+         .learn-more {
+         width: 80%;
+         }
+         .tree-container {
+         min-height: 400px;
+         padding: 20px;
+         }
+         .tree-node {
+         width: 50px;
+         height: 50px;
+         font-size: 14px;
+         }
+         .edge-legend {
+         font-size: 10px;
+         padding: 8px;
+         }
+         }
+      </style>
+   </head>
+   <body>
+      <header>
+         <h1><a href="#">Binary Heap Visualizer</a></h1>
+         <div class="hamburger" onclick="toggleMenu()">
+            <i id="menu-icon" class="fas fa-bars"></i>
+         </div>
+         <nav class="nav" id="nav">
+            <ul class="nav-list" id="nav-list">
+               <li>
+                  <a href="#" class="nav-link" onclick="openHelp()">How to work</a>
+               </li>
+               <li>
+                  <a href="https://github.com" class="nav-link" target="_blank">Github</a>
+               </li>
+               <li>
+                  <a href="https://linkedin.com" class="nav-link" target="_blank">LinkedIn</a>
+               </li>
+            </ul>
+         </nav>
+      </header>
+      <main>
+         <h1 style="color: #FDEE00;">Binary Heap Visualizer</h1>
+         <p class="subtitle">
+            A simple binary heap visualizer to help you understand how binary heaps work.
+         </p>
+         <div id="helpOverlay" class="overlay">
+            <div class="popup">
+               <span class="close" onclick="closeHelp()"><i class="fas fa-times"></i></span>
+               <h2>How Binary Heap Works</h2>
+               <p>
+                  <b>Binary Heap:</b> A complete binary tree where each parent node is either greater than (Max Heap) or less than (Min Heap) its children.
+               </p>
+               <ul>
+                  <li>
+                     <b>insert(value)</b> - Add a new element to the heap and maintain heap property.
+                  </li>
+                  <li>
+                     <b>extractMax/Min()</b> - Remove and return the root element (max in max heap, min in min heap).
+                  </li>
+                  <li>
+                     <b>peek()</b> - Get the root element without removing it.
+                  </li>
+                  <li><b>heapify()</b> - Restore heap property after modifications.</li>
+                  <li><b>buildHeap(array)</b> - Create heap from an array.</li>
+                  <li><b>getSize()</b> - Get the number of elements in the heap.</li>
+                  <li><b>isEmpty()</b> - Check if heap is empty.</li>
+                  <li><b>clear()</b> - Remove all elements from the heap.</li>
+               </ul>
+               <p><b>Properties:</b></p>
+               <ul>
+                  <li><b>Complete Binary Tree:</b> All levels filled except possibly the last, which is filled left to right</li>
+                  <li><b>Max Heap:</b> Parent ≥ children</li>
+                  <li><b>Min Heap:</b> Parent ≤ children</li>
+                  <li><b>Array representation:</b> Parent at i, children at 2i+1 and 2i+2</li>
+               </ul>
+               <p><b>Edge Colors:</b></p>
+               <ul>
+                  <li><b>Left children:</b> Red to orange gradient</li>
+                  <li><b>Right children:</b> Teal to green gradient</li>
+               </ul>
+            </div>
+         </div>
+         <div class="heap-type-toggle">
+            <button id="maxHeapBtn" class="active" onclick="toggleHeapType('max')">Max Heap</button>
+            <button id="minHeapBtn" onclick="toggleHeapType('min')">Min Heap</button>
+         </div>
+         <div class="controls">
+            <input type="number" id="heap-input" placeholder="Enter a number" min="-9999" max="9999" />
+            <div class="btn-group">
+               <button id="insertBtn" onclick="insertElement()">Insert</button>
+               <button id="extractBtn" onclick="extractRoot()">Extract Root</button>
+               <button id="peekBtn" onclick="peekRoot()">Peek Root</button>
+               <button id="buildBtn" onclick="buildFromArray()">Build from Array</button>
+               <button id="sizeBtn" onclick="getHeapSize()">Get Size</button>
+               <button id="clearBtn" onclick="clearHeap()">Clear</button>
+            </div>
+         </div>
+         <div id="tree-container" class="tree-container">
+            <div class="edge-legend">
+               <div class="legend-item">
+                  <div class="legend-color left"></div>
+                  <span>Left Child</span>
+               </div>
+               <div class="legend-item">
+                  <div class="legend-color right"></div>
+                  <span>Right Child</span>
+               </div>
+            </div>
+            <div id="canvasInner" class="canvas-inner"></div>
+         </div>
+         <div class="list-stats-wrapper">
+            <div class="stats" id="stats">
+               <strong>Type:</strong> <span id="heapType">Max Heap</span><br />
+               <strong>Root:</strong> <span id="root">-</span><br />
+               <strong>Size:</strong> <span id="size">0</span><br />
+               <strong>Height:</strong> <span id="height">0</span><br />
+               <strong>Is Empty:</strong> <span id="isEmpty">Yes</span><br />
+               <strong>Last Element:</strong> <span id="lastElement">-</span><br />
+               <strong>Is Complete:</strong> <span id="isComplete">Yes</span><br />
+            </div>
+            <div class="learn-more" id="learn-more">
+               <h2>Learn More Data Structures</h2>
+               <p style="color: #bbb;">Explore other data structure visualizations to enhance your understanding.</p>
+               <div class="controls">
+                  <button onclick="alert('Stack visualizer coming soon!')">Stack</button>
+                  <button onclick="alert('Queue visualizer coming soon!')">Queue</button>
+                  <button onclick="alert('Binary Tree visualizer available!')">Binary Tree</button>
+               </div>
+            </div>
+         </div>
+      </main>
+      <footer>
+         <p style="color: #fff">
+            Binary Heap Visualizer
+         </p>
+         <p style="color: #fff">
+            <a href="#" style="color: #fff; text-decoration: none">Interactive Learning Tool</a>
+            © 2025
+         </p>
+      </footer>
+      <script>
+         // Toggle menu for mobile view
+         let menuOpen = false;
+         function toggleMenu() {
+             const nav = document.getElementById("nav");
+             const icon = document.getElementById("menu-icon");
+             menuOpen = !menuOpen;
+             if (menuOpen) {
+                 nav.classList.add("open");
+                 icon.classList.replace("fa-bars", "fa-times");
+             } else {
+                 nav.classList.remove("open");
+                 icon.classList.replace("fa-times", "fa-bars");
+             }
+         }
+         document.querySelectorAll("#nav a").forEach(link => {
+             link.addEventListener("click", () => {
+                 const nav = document.getElementById("nav");
+                 const icon = document.getElementById("menu-icon");
+                 nav.classList.remove("open");
+                 if (icon.classList.contains('fa-times')) icon.classList.replace("fa-times", "fa-bars");
+                 menuOpen = false;
+             });
+         });
+
+         // Binary Heap Implementation
+         class BinaryHeap {
+             constructor(isMaxHeap = true) {
+                 this.heap = [];
+                 this.isMaxHeap = isMaxHeap;
+             }
+
+             getParentIndex(index) {
+                 return Math.floor((index - 1) / 2);
+             }
+
+             getLeftChildIndex(index) {
+                 return 2 * index + 1;
+             }
+
+             getRightChildIndex(index) {
+                 return 2 * index + 2;
+             }
+
+             hasParent(index) {
+                 return this.getParentIndex(index) >= 0;
+             }
+
+             hasLeftChild(index) {
+                 return this.getLeftChildIndex(index) < this.heap.length;
+             }
+
+             hasRightChild(index) {
+                 return this.getRightChildIndex(index) < this.heap.length;
+             }
+
+             parent(index) {
+                 return this.heap[this.getParentIndex(index)];
+             }
+
+             leftChild(index) {
+                 return this.heap[this.getLeftChildIndex(index)];
+             }
+
+             rightChild(index) {
+                 return this.heap[this.getRightChildIndex(index)];
+             }
+
+             swap(index1, index2) {
+                 [this.heap[index1], this.heap[index2]] = [this.heap[index2], this.heap[index1]];
+             }
+
+             compare(a, b) {
+                 return this.isMaxHeap ? a > b : a < b;
+             }
+
+             peek() {
+                 if (this.heap.length === 0) return null;
+                 return this.heap[0];
+             }
+
+             insert(value) {
+                 this.heap.push(value);
+                 this.heapifyUp();
+             }
+
+             extractRoot() {
+                 if (this.heap.length === 0) return null;
+                 if (this.heap.length === 1) return this.heap.pop();
+                 
+                 const root = this.heap[0];
+                 this.heap[0] = this.heap.pop();
+                 this.heapifyDown();
+                 return root;
+             }
+
+             heapifyUp() {
+                 let index = this.heap.length - 1;
+                 while (this.hasParent(index) && this.compare(this.heap[index], this.parent(index))) {
+                     this.swap(this.getParentIndex(index), index);
+                     index = this.getParentIndex(index);
+                 }
+             }
+
+             heapifyDown() {
+                 let index = 0;
+                 while (this.hasLeftChild(index)) {
+                     let targetChildIndex = this.getLeftChildIndex(index);
+                     
+                     if (this.hasRightChild(index) && 
+                         this.compare(this.rightChild(index), this.leftChild(index))) {
+                         targetChildIndex = this.getRightChildIndex(index);
+                     }
+                     
+                     if (this.compare(this.heap[index], this.heap[targetChildIndex])) {
+                         break;
+                     } else {
+                         this.swap(index, targetChildIndex);
+                     }
+                     
+                     index = targetChildIndex;
+                 }
+             }
+
+             buildHeap(array) {
+                 this.heap = [...array];
+                 for (let i = Math.floor(this.heap.length / 2) - 1; i >= 0; i--) {
+                     this.heapifyDownFromIndex(i);
+                 }
+             }
+
+             heapifyDownFromIndex(index) {
+                 while (this.hasLeftChild(index)) {
+                     let targetChildIndex = this.getLeftChildIndex(index);
+                     
+                     if (this.hasRightChild(index) && 
+                         this.compare(this.rightChild(index), this.leftChild(index))) {
+                         targetChildIndex = this.getRightChildIndex(index);
+                     }
+                     
+                     if (this.compare(this.heap[index], this.heap[targetChildIndex])) {
+                         break;
+                     } else {
+                         this.swap(index, targetChildIndex);
+                     }
+                     
+                     index = targetChildIndex;
+                 }
+             }
+
+             size() {
+                 return this.heap.length;
+             }
+
+             isEmpty() {
+                 return this.heap.length === 0;
+             }
+
+             clear() {
+                 this.heap = [];
+             }
+
+             getHeight() {
+                 if (this.heap.length === 0) return 0;
+                 return Math.floor(Math.log2(this.heap.length)) + 1;
+             }
+
+             isComplete() {
+                 return true; // Heap is always complete by definition
+             }
+
+             getLastElement() {
+                 if (this.heap.length === 0) return null;
+                 return this.heap[this.heap.length - 1];
+             }
+         }
+
+         let binaryHeap = new BinaryHeap(true); // Start with max heap
+         let isProcessing = false; // Flag to prevent multiple simultaneous operations
+
+         function toggleHeapType(type) {
+             if (isProcessing) return;
+             const maxBtn = document.getElementById('maxHeapBtn');
+             const minBtn = document.getElementById('minHeapBtn');
+             
+             if (type === 'max') {
+                 maxBtn.classList.add('active');
+                 minBtn.classList.remove('active');
+                 binaryHeap.isMaxHeap = true;
+             } else {
+                 minBtn.classList.add('active');
+                 maxBtn.classList.remove('active');
+                 binaryHeap.isMaxHeap = false;
+             }
+             
+             // Rebuild heap with new type
+             const currentArray = [...binaryHeap.heap];
+             binaryHeap.clear();
+             if (currentArray.length > 0) {
+                 binaryHeap.buildHeap(currentArray);
+             }
+             renderHeap();
+         }
+
+         function renderHeap() {
+             const container = document.getElementById("canvasInner");
+             container.innerHTML = "";
+             if (binaryHeap.isEmpty()) {
+                 const treeContainer = document.getElementById('tree-container');
+                 treeContainer.querySelector('.canvas-inner').innerHTML = '<div style="color: #bbb; font-size: 18px; padding: 20px;">Empty Heap</div>';
+                 updateStats();
+                 return;
+             }
+             const positions = calculatePositions();
+             const nodeSpacing = 140;
+             const totalNodes = binaryHeap.size();
+             const contentWidth = Math.max(totalNodes * nodeSpacing, 600);
+             container.style.width = contentWidth + 'px';
+
+             const outer = document.getElementById('tree-container');
+             setTimeout(() => {
+                 outer.scrollLeft = Math.max(0, (container.offsetWidth - outer.clientWidth) / 2);
+             }, 0);
+
+             drawHeap(container, positions);
+             updateStats();
+         }
+
+         function calculatePositions() {
+             const positions = [];
+             const levelHeight = 120;
+             const nodeSpacing = 140;
+             const height = binaryHeap.getHeight();
+             
+             for (let i = 0; i < binaryHeap.heap.length; i++) {
+                 const level = Math.floor(Math.log2(i + 1));
+                 const positionInLevel = i - (Math.pow(2, level) - 1);
+                 const nodesInLevel = Math.pow(2, level);
+                 const totalWidth = (nodesInLevel - 1) * nodeSpacing;
+                 const startX = -totalWidth / 2;
+                 
+                 positions.push({
+                     x: startX + positionInLevel * nodeSpacing,
+                     y: level * levelHeight + 50, // Add offset for better spacing
+                     index: i
+                 });
+             }
+             
+             return positions;
+         }
+
+         function drawHeap(container, positions) {
+             const keys = positions;
+             const xs = positions.map(p => p.x);
+             const minX = Math.min(...xs);
+             const maxX = Math.max(...xs);
+             const padding = 80;
+             const offsetX = padding - minX + 30;
+
+             drawEdges(container, positions, offsetX);
+             drawNodes(container, positions, offsetX);
+         }
+
+         function drawEdges(container, positions, offsetX) {
+             const nodeSize = 60;
+             
+             for (let i = 0; i < positions.length; i++) {
+                 const leftChildIndex = 2 * i + 1;
+                 const rightChildIndex = 2 * i + 2;
+                 
+                 const parentPos = positions[i];
+                 const fromX = parentPos.x + offsetX;
+                 const fromY = parentPos.y + nodeSize / 2;
+                 
+                 if (leftChildIndex < positions.length) {
+                     const leftPos = positions[leftChildIndex];
+                     const toX = leftPos.x + offsetX;
+                     const toY = leftPos.y - nodeSize / 2;
+                     createEdge(container, { x: fromX, y: fromY }, { x: toX, y: toY }, 'left-child');
+                 }
+                 
+                 if (rightChildIndex < positions.length) {
+                     const rightPos = positions[rightChildIndex];
+                     const toX = rightPos.x + offsetX;
+                     const toY = rightPos.y - nodeSize / 2;
+                     createEdge(container, { x: fromX, y: fromY }, { x: toX, y: toY }, 'right-child');
+                 }
+             }
+         }
+
+         function drawNodes(container, positions, offsetX) {
+             for (let i = 0; i < positions.length; i++) {
+                 const pos = positions[i];
+                 const nodeDiv = document.createElement('div');
+                 nodeDiv.className = 'tree-node';
+                 if (i === 0) nodeDiv.classList.add('root');
+                 nodeDiv.style.left = (pos.x + offsetX) + 'px';
+                 nodeDiv.style.top = pos.y + 'px';
+                 nodeDiv.textContent = binaryHeap.heap[i];
+                 
+                 if (i === 0) {
+                     const label = document.createElement('div');
+                     label.className = 'root-label';
+                     label.textContent = 'Root';
+                     nodeDiv.appendChild(label);
+                 }
+                 
+                 container.appendChild(nodeDiv);
+             }
+         }
+
+         function createEdge(container, from, to, className) {
+             const edge = document.createElement('div');
+             edge.className = `tree-edge ${className}`;
+             const dx = to.x - from.x;
+             const dy = to.y - from.y;
+             const length = Math.sqrt(dx * dx + dy * dy);
+             const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+             edge.style.width = length + 'px';
+             edge.style.left = from.x + 'px';
+             edge.style.top = from.y + 'px';
+             edge.style.transform = `rotate(${angle}deg)`;
+             container.appendChild(edge);
+         }
+
+         function updateStats() {
+             document.getElementById('heapType').textContent = binaryHeap.isMaxHeap ? 'Max Heap' : 'Min Heap';
+             document.getElementById('root').textContent = binaryHeap.peek() ?? '-';
+             document.getElementById('size').textContent = binaryHeap.size();
+             document.getElementById('height').textContent = binaryHeap.getHeight();
+             document.getElementById('isEmpty').textContent = binaryHeap.isEmpty() ? 'Yes' : 'No';
+             document.getElementById('lastElement').textContent = binaryHeap.getLastElement() ?? '-';
+             document.getElementById('isComplete').textContent = binaryHeap.isComplete() ? 'Yes' : 'No';
+         }
+
+         function openHelp() {
+             document.getElementById('helpOverlay').style.display = 'block';
+         }
+
+         function closeHelp() {
+             document.getElementById('helpOverlay').style.display = 'none';
+         }
+
+         function toggleButtons(disabled) {
+             const buttons = ['insertBtn', 'extractBtn', 'peekBtn', 'buildBtn', 'sizeBtn', 'clearBtn'];
+             buttons.forEach(id => {
+                 document.getElementById(id).disabled = disabled;
+             });
+         }
+
+         async function insertElement() {
+             if (isProcessing) return;
+             isProcessing = true;
+             toggleButtons(true);
+             const input = document.getElementById('heap-input');
+             const value = parseInt(input.value);
+             if (!isNaN(value) && value >= -9999 && value <= 9999) {
+                 binaryHeap.insert(value);
+                 await animateInsert();
+                 input.value = '';
+             } else {
+                 alert('Please enter a valid number between -9999 and 9999');
+             }
+             isProcessing = false;
+             toggleButtons(false);
+         }
+
+         async function extractRoot() {
+             if (isProcessing) return;
+             isProcessing = true;
+             toggleButtons(true);
+             const root = binaryHeap.extractRoot();
+             if (root !== null) {
+                 await animateExtract();
+                 alert(`Extracted root: ${root}`);
+             } else {
+                 alert('Heap is empty');
+             }
+             isProcessing = false;
+             toggleButtons(false);
+         }
+
+         async function peekRoot() {
+             if (isProcessing) return;
+             const root = binaryHeap.peek();
+             if (root !== null) {
+                 alert(`Root element: ${root}`);
+             } else {
+                 alert('Heap is empty');
+             }
+         }
+
+         async function buildFromArray() {
+             if (isProcessing) return;
+             isProcessing = true;
+             toggleButtons(true);
+             const input = prompt('Enter comma-separated numbers (e.g., 10,5,15,3,8,12,20):');
+             if (input) {
+                 try {
+                     const array = input.split(',').map(x => parseInt(x.trim())).filter(x => !isNaN(x));
+                     if (array.length > 0 && array.every(x => x >= -9999 && x <= 9999)) {
+                         binaryHeap.buildHeap(array);
+                         await animateInsert();
+                     } else {
+                         alert('Please enter valid numbers between -9999 and 9999 separated by commas');
+                     }
+                 } catch (e) {
+                     alert('Invalid input format');
+                 }
+             }
+             isProcessing = false;
+             toggleButtons(false);
+         }
+
+         function getHeapSize() {
+             if (isProcessing) return;
+             alert(`Heap size: ${binaryHeap.size()}`);
+         }
+
+         async function clearHeap() {
+             if (isProcessing) return;
+             isProcessing = true;
+             toggleButtons(true);
+             binaryHeap.clear();
+             await animateExtract();
+             isProcessing = false;
+             toggleButtons(false);
+         }
+
+         async function animateInsert() {
+             const container = document.getElementById("canvasInner");
+             const lastNode = container.querySelector('.tree-node:last-child');
+             if (lastNode) {
+                 lastNode.classList.add('inserting');
+                 await new Promise(resolve => setTimeout(resolve, 500));
+                 lastNode.classList.remove('inserting');
+             }
+             renderHeap();
+         }
+
+         async function animateExtract() {
+             const container = document.getElementById("canvasInner");
+             const rootNode = container.querySelector('.tree-node.root');
+             if (rootNode) {
+                 rootNode.classList.add('extracting');
+                 await new Promise(resolve => setTimeout(resolve, 500));
+                 rootNode.classList.remove('extracting');
+             }
+             renderHeap();
+         }
+
+         // Initialize with empty heap
+         renderHeap();
+      </script>
+   </body>
+</html>
